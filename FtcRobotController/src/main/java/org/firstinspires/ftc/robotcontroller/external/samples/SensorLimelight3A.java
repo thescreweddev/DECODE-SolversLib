@@ -39,6 +39,11 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
@@ -47,7 +52,7 @@ import java.util.List;
 /*
  * This OpMode illustrates how to use the Limelight3A Vision Sensor.
  *
- * @see <a href="https://limelightvision.io/">Limelight</a>
+ * @see <a href="https://limelig htvision.io/">Limelight</a>
  *
  * Notes on configuration:
  *
@@ -67,19 +72,46 @@ import java.util.List;
  *   below the name of the Limelight on the top level configuration screen.
  */
 @TeleOp(name = "Sensor: Limelight3A", group = "Sensor")
-@Disabled
+//@Disabled
 public class SensorLimelight3A extends LinearOpMode {
 
     private Limelight3A limelight;
+    private CRServo aimServo;
+    private DcMotor motor;
+    private Servo upper;
+
+    private Gamepad gm1;
+
+    // PIDF values (TUNE THESE)
+    private double kP = 0.045;
+    private double kI = 0.000;
+    private double kD = 0.004;
+    private double kF = 0.0;
+
+    private double integralSum = 0;
+    private double lastError = 0;
+
+    private ElapsedTime timer = new ElapsedTime();
+
+
 
     @Override
     public void runOpMode() throws InterruptedException
     {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        aimServo = hardwareMap.get(CRServo.class, "aimServo");
+        upper = hardwareMap.get(Servo.class,"up");
+        motor = hardwareMap.get(DcMotor.class, "motor");
+
+
+        telemetry.setMsTransmissionInterval(11);
 
         telemetry.setMsTransmissionInterval(11);
 
         limelight.pipelineSwitch(0);
+
+        timer.reset();
+
 
         /*
          * Starts polling for data.  If you neglect to call start(), getLatestResult() will return null.
@@ -88,70 +120,73 @@ public class SensorLimelight3A extends LinearOpMode {
 
         telemetry.addData(">", "Robot Ready.  Press Play.");
         telemetry.update();
+        upper.setPosition(0);
         waitForStart();
 
+
         while (opModeIsActive()) {
+
+            if(gamepad1.dpad_up){
+                upper.setPosition(1);
+            }else if(!gamepad1.dpad_up){
+                upper.setPosition(-1);
+            }
+
+
             LLStatus status = limelight.getStatus();
-            telemetry.addData("Name", "%s",
-                    status.getName());
+            telemetry.addData("Name", "%s", status.getName());
             telemetry.addData("LL", "Temp: %.1fC, CPU: %.1f%%, FPS: %d",
-                    status.getTemp(), status.getCpu(),(int)status.getFps());
-            telemetry.addData("Pipeline", "Index: %d, Type: %s",
-                    status.getPipelineIndex(), status.getPipelineType());
+                    status.getTemp(), status.getCpu(), (int) status.getFps());
 
             LLResult result = limelight.getLatestResult();
+
             if (result.isValid()) {
-                // Access general information
-                Pose3D botpose = result.getBotpose();
-                double captureLatency = result.getCaptureLatency();
-                double targetingLatency = result.getTargetingLatency();
-                double parseLatency = result.getParseLatency();
-                telemetry.addData("LL Latency", captureLatency + targetingLatency);
-                telemetry.addData("Parse Latency", parseLatency);
-                telemetry.addData("PythonOutput", java.util.Arrays.toString(result.getPythonOutput()));
 
-                telemetry.addData("tx", result.getTx());
-                telemetry.addData("txnc", result.getTxNC());
-                telemetry.addData("ty", result.getTy());
-                telemetry.addData("tync", result.getTyNC());
+                double xError = result.getTx();   // Horizontal degrees off center
 
-                telemetry.addData("Botpose", botpose.toString());
+                double deltaTime = timer.seconds();
+                timer.reset();
 
-                // Access barcode results
-                List<LLResultTypes.BarcodeResult> barcodeResults = result.getBarcodeResults();
-                for (LLResultTypes.BarcodeResult br : barcodeResults) {
-                    telemetry.addData("Barcode", "Data: %s", br.getData());
+                // PID terms
+                integralSum += xError * deltaTime;
+                double derivative = (xError - lastError) / deltaTime;
+
+                double output = (xError * kP) +
+                        (integralSum * kI) +
+                        (derivative * kD);
+
+                lastError = xError;
+
+                // DEADZONE
+                if (Math.abs(xError) < 1.0) {
+                    output = 0;
+                    integralSum = 0;
                 }
 
-                // Access classifier results
-                List<LLResultTypes.ClassifierResult> classifierResults = result.getClassifierResults();
-                for (LLResultTypes.ClassifierResult cr : classifierResults) {
-                    telemetry.addData("Classifier", "Class: %s, Confidence: %.2f", cr.getClassName(), cr.getConfidence());
+                // MINIMUM POWER TO FORCE ROTATION
+                if (output > 0) {
+                    output += 0.08;
+                } else if (output < 0) {
+                    output -= 0.08;
                 }
 
-                // Access detector results
-                List<LLResultTypes.DetectorResult> detectorResults = result.getDetectorResults();
-                for (LLResultTypes.DetectorResult dr : detectorResults) {
-                    telemetry.addData("Detector", "Class: %s, Area: %.2f", dr.getClassName(), dr.getTargetArea());
-                }
+                // Invert if needed (very common)
+                output = -output;
 
-                // Access fiducial results
-                List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
-                for (LLResultTypes.FiducialResult fr : fiducialResults) {
-                    telemetry.addData("Fiducial", "ID: %d, Family: %s, X: %.2f, Y: %.2f", fr.getFiducialId(), fr.getFamily(), fr.getTargetXDegrees(), fr.getTargetYDegrees());
-                }
+                // Clip
+                output = Math.max(-1, Math.min(1, output));
 
-                // Access color results
-                List<LLResultTypes.ColorResult> colorResults = result.getColorResults();
-                for (LLResultTypes.ColorResult cr : colorResults) {
-                    telemetry.addData("Color", "X: %.2f, Y: %.2f", cr.getTargetXDegrees(), cr.getTargetYDegrees());
-                }
-            } else {
-                telemetry.addData("Limelight", "No data available");
+                aimServo.setPower(-output);
+                motor.setPower(-output);
+
+                telemetry.addData("X Error", xError);
+                telemetry.addData("Servo Power", output);
             }
 
             telemetry.update();
         }
+
         limelight.stop();
+
     }
 }
