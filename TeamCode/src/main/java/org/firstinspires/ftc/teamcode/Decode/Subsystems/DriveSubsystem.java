@@ -14,13 +14,15 @@ public class DriveSubsystem extends SubsystemBase {
 
     MecanumDrive mecanumdrive;
     public GoBildaPinpointDriver pinpoint;
-    Motor fr,fl,br,bl;
+    public Motor fr,fl,br,bl;
     //
 
 public DriveSubsystem(HardwareMap hardwaremap){
     super();
 
     pinpoint = hardwaremap.get(GoBildaPinpointDriver.class, "pinpoint");
+    pinpoint.resetPosAndIMU();
+    pinpoint.recalibrateIMU();
 
     fr = new Motor(hardwaremap,"fr", Motor.GoBILDA.RPM_312);
     fl = new Motor(hardwaremap,"fl", Motor.GoBILDA.RPM_312);
@@ -32,8 +34,8 @@ public DriveSubsystem(HardwareMap hardwaremap){
     br.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
     bl.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
-    fr.setInverted(true);
     fl.setInverted(true);
+    bl.setInverted(true);
 
     this.mecanumdrive = new MecanumDrive(false, fl, fr, bl, br);
 
