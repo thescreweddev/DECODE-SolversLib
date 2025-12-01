@@ -24,7 +24,7 @@ public class ShootSequence extends SequentialCommandGroup {
 
     private int findSlotWithIndex(SortSubsystem sorter, int shootIndex) {
         for (int i = 0; i < 3; i++) {
-            if (sorter.slots[i].shootingIndex == shootIndex) return i;
+            if (sorter.slots[i].shootingIndex == shootIndex) return i;               // && slot empty
         }
         return 0;
     }
