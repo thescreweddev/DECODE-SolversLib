@@ -14,7 +14,7 @@ public class SortSubsystem extends SubsystemBase {
 
     public final Slot[] slots = new Slot[3];
 
-    public boolean canIntake = true;
+    //public static boolean canIntake = true;
     public boolean canShoot = false;
 
     public int currentSlotIndex = 0;
@@ -50,7 +50,7 @@ public class SortSubsystem extends SubsystemBase {
         return -1;
     }
 
-    public void markSlot(Slot.BallColor color, int shootingIndex) {
+    public void markSlot(Slot.BallColor color, int shootingIndex) {                                 //pointer??
         Slot s = getCurrentSlot();
         s.color = color;
         s.shootingIndex = shootingIndex;

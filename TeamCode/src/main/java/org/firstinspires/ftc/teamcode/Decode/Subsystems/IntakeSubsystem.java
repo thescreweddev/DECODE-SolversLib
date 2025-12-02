@@ -7,6 +7,7 @@ import com.seattlesolvers.solverslib.hardware.motors.Motor;
 public class IntakeSubsystem extends SubsystemBase {
 
     Motor intLeft,intRight;
+    public boolean canIntake;
     public IntakeSubsystem(HardwareMap hardwareMap){
         super();
         intLeft = new Motor(hardwareMap,"iL", Motor.GoBILDA.RPM_1150);
@@ -30,10 +31,15 @@ public class IntakeSubsystem extends SubsystemBase {
         intRight.set(-1);
     }
 
-//    @Override
-//    public void periodic() {
-//        super.periodic();
-//    }
+    @Override
+    public void periodic() {
+        super.periodic();
+        if(canIntake){
+            active();
+        }else{
+            idle();
+        }
+    }
 
 
 }
