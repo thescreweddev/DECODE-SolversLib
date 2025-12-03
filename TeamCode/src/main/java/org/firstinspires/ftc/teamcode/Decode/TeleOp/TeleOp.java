@@ -20,12 +20,14 @@ import org.firstinspires.ftc.teamcode.Decode.Subsystems.SortSubsystem;
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp
 public class TeleOp extends CommandOpMode {
 
+    int colorcase=1;
 
     DriveSubsystem driveSubsystem;
     SortSubsystem sortSubsystem;
     IntakeSubsystem intakeSubsystem;
     ShootingSubsystem shooter;
     public Slot.BallColor[] matchCase;
+
     Slot.BallColor[] colorCase = {
 
             Slot.BallColor.GREEN,
@@ -39,9 +41,11 @@ public class TeleOp extends CommandOpMode {
     @Override
     public void initialize() {
         driveSubsystem = new DriveSubsystem(hardwareMap);
-        sortSubsystem = new SortSubsystem(hardwareMap);
         intakeSubsystem = new IntakeSubsystem(hardwareMap);
         shooter = new ShootingSubsystem(hardwareMap);
+        sortSubsystem = new SortSubsystem(hardwareMap);
+
+
         gm1 = new GamepadEx(gamepad1);
 
         drive = new FieldCentric(      //initializare comanda de drive prin constructorul specific si valorile de la stick uri
@@ -59,8 +63,7 @@ public class TeleOp extends CommandOpMode {
                     colorCase[0] = Slot.BallColor.VIOLET;
                     colorCase[1] = Slot.BallColor.GREEN;
                     colorCase[2] = Slot.BallColor.VIOLET;
-                    telemetry.addData("colorCase", "VGV");
-                    telemetry.update();
+                    colorcase =2;
                 }
         );
         gm1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
@@ -68,8 +71,7 @@ public class TeleOp extends CommandOpMode {
                     colorCase[0] = Slot.BallColor.GREEN;
                     colorCase[1] = Slot.BallColor.VIOLET;
                     colorCase[2] = Slot.BallColor.VIOLET;
-                    telemetry.addData("colorCase", "GVV");
-                    telemetry.update();
+                    colorcase = 1;
                 }
         );
         gm1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(
@@ -77,8 +79,7 @@ public class TeleOp extends CommandOpMode {
                     colorCase[0] = Slot.BallColor.VIOLET;
                     colorCase[1] = Slot.BallColor.VIOLET;
                     colorCase[2] = Slot.BallColor.GREEN;
-                    telemetry.addData("colorCase", "VVG");
-                    telemetry.update();
+                    colorcase = 3;
                 }
         );
 
@@ -105,7 +106,10 @@ public class TeleOp extends CommandOpMode {
                     new AutoRotateCommand(intakeSubsystem,sortSubsystem,colorCase)
             );
 
-        telemetry.addData("PINPINT_HEADING",driveSubsystem.pinpoint.getHeading(AngleUnit.DEGREES));
+        telemetry.addData("green",sortSubsystem.colorSensor.green());
+        telemetry.addData("blue",sortSubsystem.colorSensor.blue());
+        telemetry.addData("red",sortSubsystem.colorSensor.red());
+        telemetry.addData("case",colorcase);
         telemetry.update();
     }
 }

@@ -16,6 +16,7 @@ public class AutoRotateCommand extends CommandBase {
 
 
     public AutoRotateCommand(IntakeSubsystem intakeSubsystem, SortSubsystem sorter, Slot.BallColor[] matchOrder) {
+        intakeSubsystem.canIntake = true;
         this.sorter = sorter;
         this.matchOrder = matchOrder;
         addRequirements(sorter);
@@ -54,7 +55,7 @@ public class AutoRotateCommand extends CommandBase {
         int special = -1;
                       //loop through each color case using a for loop
                       //check if the color detected is equal to the color on the case
-                      // check if the index is already taken by another slot > if yes, go to the next index, if no index was found , index = -1;
+                      // check if the index is already taken by another slot > if yes, go to the next index, if no index was found , index = -1(pregatire pt next loop;
         for(int i=1; i<=3;i++){
             if(colorCase[i-1] == color){
                 for(int j=0; j<3;j++){
@@ -73,7 +74,7 @@ public class AutoRotateCommand extends CommandBase {
     }
 
     @Override
-    public boolean isFinished() {             //conditia de oprire este canshoot = true;
+    public boolean isFinished() {
         return sorter.canShoot;
     }
 }

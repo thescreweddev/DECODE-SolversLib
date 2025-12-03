@@ -10,7 +10,7 @@ public class SortSubsystem extends SubsystemBase {
 
     private final ServoEx spindexer;
     private final ServoEx pusher;
-    private final RevColorSensorV3 colorSensor;
+    public final RevColorSensorV3 colorSensor;
 
     public final Slot[] slots = new Slot[3];
 
@@ -33,7 +33,7 @@ public class SortSubsystem extends SubsystemBase {
         slots[2] = new Slot(2, /*3*/ 240);
     }
 
-    // ---------------- SLOT LOGIC ----------------
+    // logica slot
 
     public Slot getCurrentSlot() {
         return slots[currentSlotIndex];
@@ -62,7 +62,7 @@ public class SortSubsystem extends SubsystemBase {
         }
     }
 
-    // ---------------- SERVO CONTROL ----------------
+    // servo
 
     public void rotateToSlot(int index) {
         currentSlotIndex = index;
@@ -78,17 +78,12 @@ public class SortSubsystem extends SubsystemBase {
         pusher.set(RETRACT_POS);
     }
 
-    // ---------------- COLOR CLASSIFICATION ----------------
+    // comenzi culoare
 
     public Slot.BallColor detectColor() {
         int r = colorSensor.red();
         int g = colorSensor.green();
         int b = colorSensor.blue();
-
-        // Explanation:
-        // Green ball = high G channel
-        // Violet ball = high R+B (which forms purple)
-        // Chamber is dark → LED makes contrast visible
 
         if (g > r && g > b) {
             return Slot.BallColor.GREEN;
