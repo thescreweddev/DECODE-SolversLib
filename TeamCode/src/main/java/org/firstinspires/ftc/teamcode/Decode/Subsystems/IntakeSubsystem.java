@@ -16,7 +16,7 @@ public class IntakeSubsystem extends SubsystemBase {
         intLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         intRight.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
-        intLeft.setInverted(true);
+        intRight.setInverted(true);
     }
     public void active(){
         intLeft.set(1);

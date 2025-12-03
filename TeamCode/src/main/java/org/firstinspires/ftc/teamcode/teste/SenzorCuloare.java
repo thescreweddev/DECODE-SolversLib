@@ -15,8 +15,8 @@ public class SenzorCuloare extends LinearOpMode {
     @Override
     public void runOpMode(){
         c1 = hardwareMap.get(ColorSensor.class, "c1");
-        c2 = hardwareMap.get(ColorSensor.class, "c2");
-        c3 = hardwareMap.get(ColorSensor.class, "c3");
+//        c2 = hardwareMap.get(ColorSensor.class, "c2");
+//        c3 = hardwareMap.get(ColorSensor.class, "c3");
         servo = hardwareMap.get(CRServo.class, "servo");
 
         waitForStart();

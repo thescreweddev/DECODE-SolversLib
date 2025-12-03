@@ -15,7 +15,7 @@ public class ShootSequence extends SequentialCommandGroup {
             int slotIndex = findSlotWithIndex(sorter, targetShootIndex);
 
             addCommands(
-                    new RotateToSlotCommand(sorter, slotIndex),
+            //        new RotateToSlotCommand(sorter, slotIndex),
                     new PushBallCommand(sorter),
                     new RetractPusherCommand(sorter)
             );

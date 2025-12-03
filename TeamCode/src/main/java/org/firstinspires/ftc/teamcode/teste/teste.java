@@ -5,21 +5,25 @@ import android.annotation.TargetApi;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Decode.Subsystems.DriveSubsystem;
 
 @TeleOp
 public class teste extends OpMode {
     DriveSubsystem driveSubsystem;
+    Servo servo;
     @Override
     public void init() {
         driveSubsystem = new DriveSubsystem(hardwareMap);
+        servo = hardwareMap.get(Servo.class,"spin");
     }
 
     @Override
     public void loop() {
         if(gamepad1.x){
             driveSubsystem.fl.set(1);
+            servo.setPosition(0);
         } else if (gamepad1.y) {
             driveSubsystem.fr.set(1);
         }else if (gamepad1.a) {

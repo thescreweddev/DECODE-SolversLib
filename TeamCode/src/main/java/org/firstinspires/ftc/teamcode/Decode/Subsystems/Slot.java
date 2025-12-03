@@ -9,8 +9,11 @@ public class Slot {
 
     public int slotIndex;
     public double angleDeg;
+
     public BallColor color;
+
     public int shootingIndex;
+    public int shootSlotAngle;
 
     public Slot(int slotIndex, double angleDeg) {
         this.slotIndex = slotIndex;

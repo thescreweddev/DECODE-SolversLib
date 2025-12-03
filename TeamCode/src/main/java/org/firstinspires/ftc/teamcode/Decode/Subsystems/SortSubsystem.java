@@ -8,7 +8,7 @@ import com.seattlesolvers.solverslib.hardware.servos.ServoEx;
 
 public class SortSubsystem extends SubsystemBase {
 
-    private final ServoEx spindexer;
+    public final ServoEx spindexer;
     private final ServoEx pusher;
     public final RevColorSensorV3 colorSensor;
 
@@ -20,17 +20,18 @@ public class SortSubsystem extends SubsystemBase {
     public int currentSlotIndex = 0;
 
     // pusher positions
-    private final double PUSH_POS = 0.70;
-    private final double RETRACT_POS = 0.20;
+    private final double PUSH_POS = 0;
+    private final double RETRACT_POS = 1;
 
     public SortSubsystem(HardwareMap hardwareMap) {
+        super();
         spindexer = new ServoEx(hardwareMap,"spin");
         pusher = new ServoEx(hardwareMap,"arm");
         colorSensor = hardwareMap.get(RevColorSensorV3.class, "colorsensor");
 
-        slots[0] = new Slot(0, /*1*/ 0);
-        slots[1] = new Slot(1, /*2*/ 120);
-        slots[2] = new Slot(2, /*3*/ 240);
+        slots[0] = new Slot(0, /*1*/ 0.05);
+        slots[1] = new Slot(1, /*2*/ 0.3);
+        slots[2] = new Slot(2, /*3*/ 0.55);
     }
 
     // logica slot
