@@ -76,14 +76,14 @@ import java.util.List;
 public class SensorLimelight3A extends LinearOpMode {
 
     private Limelight3A limelight;
-    private CRServo aimServo;
-    private DcMotor motor;
-    private Servo upper;
+   // private CRServo aimServo;
+    private DcMotor motor,shooter;
+   // private Servo upper;
 
     private Gamepad gm1;
 
     // PIDF values (TUNE THESE)
-    private double kP = 0.045;
+    private double kP = 0.02;
     private double kI = 0.000;
     private double kD = 0.004;
     private double kF = 0.0;
@@ -99,9 +99,10 @@ public class SensorLimelight3A extends LinearOpMode {
     public void runOpMode() throws InterruptedException
     {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        aimServo = hardwareMap.get(CRServo.class, "aimServo");
-        upper = hardwareMap.get(Servo.class,"up");
+       // aimServo = hardwareMap.get(CRServo.class, "aimServo");
+        //upper = hardwareMap.get(Servo.class,"up");
         motor = hardwareMap.get(DcMotor.class, "motor");
+        shooter = hardwareMap.get(DcMotor.class, "shooter");
 
 
         telemetry.setMsTransmissionInterval(11);
@@ -120,16 +121,16 @@ public class SensorLimelight3A extends LinearOpMode {
 
         telemetry.addData(">", "Robot Ready.  Press Play.");
         telemetry.update();
-        upper.setPosition(0);
+        //  upper.setPosition(0);
         waitForStart();
 
 
         while (opModeIsActive()) {
 
             if(gamepad1.dpad_up){
-                upper.setPosition(1);
+                shooter.setPower(1);
             }else if(!gamepad1.dpad_up){
-                upper.setPosition(-1);
+                shooter.setPower(0);
             }
 
 
@@ -176,7 +177,6 @@ public class SensorLimelight3A extends LinearOpMode {
                 // Clip
                 output = Math.max(-1, Math.min(1, output));
 
-                aimServo.setPower(-output);
                 motor.setPower(-output);
 
                 telemetry.addData("X Error", xError);

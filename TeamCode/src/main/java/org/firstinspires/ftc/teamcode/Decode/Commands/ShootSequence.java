@@ -12,25 +12,25 @@ public class ShootSequence extends SequentialCommandGroup {
 
         for (int targetShootIndex = 1; targetShootIndex <= 3; targetShootIndex++) {
 
-            //int slotIndex = findSlotWithIndex(sorter, targetShootIndex);
+            int slotIndex = findSlotWithIndex(sorter, targetShootIndex);
 
             addCommands(
-                    //new RotateToSlotCommand(sorter, slotIndex),
-                    //new PushBallCommand(sorter),
-                    //new RetractPusherCommand(sorter)
+                    new RotateToSlotCommand(sorter, slotIndex),
+                    new PushBallCommand(sorter),
+                    new RetractPusherCommand(sorter)
             );
         }
 
         addCommands(new ResetSorterCommand(sorter,intakeSubsystem),
                     new AutoRotateCommand(intakeSubsystem,sorter, color));
     }
-/*
+
     private int findSlotWithIndex(SortSubsystem sorter, int shootIndex) {
         for (int i = 0; i < 3; i++) {
             if (sorter.slots[i].shootingIndex == shootIndex) return i;               // && slot empty
         }
         return 0;
     }
-    */
+
 
 }
