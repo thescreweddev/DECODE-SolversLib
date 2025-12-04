@@ -13,12 +13,13 @@ public class Slot {
     public BallColor color;
 
     public int shootingIndex;
-    public int shootSlotAngle;
+    public double shootSlotAngle;
 
-    public Slot(int slotIndex, double angleDeg) {
+    public Slot(int slotIndex, double angleDeg, double shootSlotAngle) {
         this.slotIndex = slotIndex;
         this.angleDeg = angleDeg;
         this.color = BallColor.NONE;
+        this.shootSlotAngle = shootSlotAngle;
         this.shootingIndex = -1; // unused
     }
 

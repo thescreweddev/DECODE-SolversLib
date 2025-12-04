@@ -29,9 +29,9 @@ public class SortSubsystem extends SubsystemBase {
         pusher = new ServoEx(hardwareMap,"arm");
         colorSensor = hardwareMap.get(RevColorSensorV3.class, "colorsensor");
 
-        slots[0] = new Slot(0, /*1*/ 0.05);
-        slots[1] = new Slot(1, /*2*/ 0.3);
-        slots[2] = new Slot(2, /*3*/ 0.55);
+        slots[0] = new Slot(0, /*1*/ 0.3, 0.13);
+        slots[1] = new Slot(1, /*2*/ 0.545, 0.37);
+        slots[2] = new Slot(2, /*3*/ 0.79, 0.625);
     }
 
     // logica slot
@@ -68,6 +68,11 @@ public class SortSubsystem extends SubsystemBase {
     public void rotateToSlot(int index) {
         currentSlotIndex = index;
         double deg = slots[index].angleDeg;
+        spindexer.set(deg);
+    }
+    public void rotateToShoot(int index){
+        currentSlotIndex = index;
+        double deg = slots[index].shootSlotAngle;
         spindexer.set(deg);
     }
 
