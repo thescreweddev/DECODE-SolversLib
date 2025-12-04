@@ -69,24 +69,24 @@ public class TeleOp extends CommandOpMode {
 
         //-------------------------------------------------------------------------------------
 
-        gm2.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(
+        gm1.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(
                 new RotateToSlotCommand(sorter,0)
         );
-        gm2.getGamepadButton(GamepadKeys.Button.TRIANGLE).whenPressed(
+        gm1.getGamepadButton(GamepadKeys.Button.TRIANGLE).whenPressed(
                 new RotateToShoot(sorter,0)
         );
 
-        gm2.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(
+        gm1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(
                 new RotateToSlotCommand(sorter,1)
         );
-        gm2.getGamepadButton(GamepadKeys.Button.SQUARE).whenPressed(
+        gm1.getGamepadButton(GamepadKeys.Button.SQUARE).whenPressed(
                 new RotateToShoot(sorter,1)
         );
 
-        gm2.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(
+        gm1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(
                 new RotateToSlotCommand(sorter,2)
         );
-        gm2.getGamepadButton(GamepadKeys.Button.CROSS).whenReleased(
+        gm1.getGamepadButton(GamepadKeys.Button.CROSS).whenReleased(
                 new RotateToShoot(sorter,2)
         );
 
@@ -106,12 +106,12 @@ public class TeleOp extends CommandOpMode {
 
         //---------------------------------------------------------------------------
 
-        gm1.getGamepadButton(GamepadKeys.Button.CIRCLE).whenHeld(
+        gm1.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenHeld(
                 new InstantCommand(()-> shooter.shoot())
         ).whenReleased(
                 new InstantCommand(()-> shooter.idle())
         );
-        gm1.getGamepadButton(GamepadKeys.Button.TRIANGLE).whenHeld(
+        gm1.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON).whenHeld(
                 new PushBallCommand(sorter)
         ).whenReleased(
                 new RetractPusherCommand(sorter)
