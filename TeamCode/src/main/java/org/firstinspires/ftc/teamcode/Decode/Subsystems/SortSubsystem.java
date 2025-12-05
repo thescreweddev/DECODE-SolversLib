@@ -20,7 +20,7 @@ public class SortSubsystem extends SubsystemBase {
     public int currentSlotIndex = 0;
 
     // pusher positions
-    private final double PUSH_POS = 0;
+    private final double PUSH_POS = 0.2;
     private final double RETRACT_POS = 1;
 
     public SortSubsystem(HardwareMap hardwareMap) {

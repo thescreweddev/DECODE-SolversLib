@@ -5,6 +5,7 @@ import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
+import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
@@ -34,6 +35,7 @@ public class TeleOp extends CommandOpMode {
     IntakeSubsystem intake;
     ShootingSubsystem shooter;
     StopperSubsystem stopper;
+    boolean start = false;
    // public Slot.BallColor[] matchCase;
 
 //    Slot.BallColor[] colorCase = {
@@ -162,6 +164,15 @@ public class TeleOp extends CommandOpMode {
 
     public void run(){
         super.run();
+        if(!start){
+            start = true;
+            schedule(
+                    new InstantCommand(()-> sorter.rotateToSlot(0)),
+                    new WaitCommand(400),
+                    new RetractPusherCommand(sorter),
+                    new InstantCommand(()-> stopper.Stop())
+            );
+        }
 //            schedule(
 //                    new RotateToSlotCommand(sortSubsystem,1)
 //            );
