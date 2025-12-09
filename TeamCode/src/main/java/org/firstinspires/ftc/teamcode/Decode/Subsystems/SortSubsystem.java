@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.Decode.Subsystems;
 
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.seattlesolvers.solverslib.hardware.servos.ServoEx;
 
+@Configurable
 public class SortSubsystem extends SubsystemBase {
 
     public final ServoEx spindexer;
@@ -29,9 +31,9 @@ public class SortSubsystem extends SubsystemBase {
         pusher = new ServoEx(hardwareMap,"arm");
         colorSensor = hardwareMap.get(RevColorSensorV3.class, "colorsensor");
 
-        slots[0] = new Slot(0, /*1*/ 0.3, 0.13);
-        slots[1] = new Slot(1, /*2*/ 0.545, 0.37);
-        slots[2] = new Slot(2, /*3*/ 0.79, 0.625);
+        slots[0] = new Slot(0, /*1*/ 0.3, 0.11);
+        slots[1] = new Slot(1, /*2*/ 0.545, 0.35);
+        slots[2] = new Slot(2, /*3*/ 0.79, 0.6);
     }
 
     // logica slot

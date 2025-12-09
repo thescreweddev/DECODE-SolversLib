@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.Decode.Commands.FieldCentric;
 import org.firstinspires.ftc.teamcode.Decode.Commands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.Decode.Commands.PushBallCommand;
 import org.firstinspires.ftc.teamcode.Decode.Commands.RetractPusherCommand;
+import org.firstinspires.ftc.teamcode.Decode.Commands.RobotCentric;
 import org.firstinspires.ftc.teamcode.Decode.Commands.RotateToShoot;
 import org.firstinspires.ftc.teamcode.Decode.Commands.RotateToSlotCommand;
 import org.firstinspires.ftc.teamcode.Decode.Commands.ShootSequence;
@@ -45,7 +46,8 @@ public class TeleOp extends CommandOpMode {
 //            Slot.BallColor.VIOLET
 //    };
 
-    FieldCentric drive;
+    FieldCentric driveFieldCentric;
+    RobotCentric driveRobotCentric;
     GamepadEx gm1,gm2;
 
     @Override
@@ -61,13 +63,21 @@ public class TeleOp extends CommandOpMode {
         gm1 = new GamepadEx(gamepad1);
         gm2 = new GamepadEx(gamepad2);
 
-        drive = new FieldCentric(      //initializare comanda de drive prin constructorul specific si valorile de la stick uri
+//        driveFieldCentric = new FieldCentric(      //initializare comanda de drive prin constructorul specific si valorile de la stick uri
+//                driveSubsystem,
+//                gm1::getLeftX,
+//                gm1::getLeftY,
+//                gm1::getRightX
+//        );
+//        driveSubsystem.setDefaultCommand(driveFieldCentric);
+
+        driveRobotCentric = new RobotCentric(
                 driveSubsystem,
                 gm1::getLeftX,
                 gm1::getLeftY,
                 gm1::getRightX
         );
-        driveSubsystem.setDefaultCommand(drive);
+        driveSubsystem.setDefaultCommand(driveRobotCentric);
 
         //-------------------------------------------------------------------------------------
 
@@ -118,6 +128,41 @@ public class TeleOp extends CommandOpMode {
         ).whenReleased(
                 new RetractPusherCommand(sorter)
         );
+
+
+        gm1.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON).whenHeld(
+                new ParallelCommandGroup(
+                        new InstantCommand(()-> intake.spit()),
+                        new InstantCommand(()-> stopper.Retract())
+                )
+        ).whenReleased(
+                new ParallelCommandGroup(
+                        new InstantCommand(()-> intake.idle()),
+                        new InstantCommand(()-> stopper.Stop())
+                )
+
+        );
+        //==========================================================================
+
+        gm2.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(
+                new InstantCommand(()-> shooter.setPower(1))
+        );
+        gm2.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(
+                new InstantCommand(()-> shooter.setPower(0.83))
+        );
+
+
+
+
+
+
+
+        //==========================================================================
+
+
+
+
+
 
         //                      SETARE COD CULOARE
 

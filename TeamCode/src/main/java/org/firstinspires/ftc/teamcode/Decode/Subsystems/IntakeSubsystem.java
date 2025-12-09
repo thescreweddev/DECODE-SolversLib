@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.Decode.Subsystems;
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.seattlesolvers.solverslib.hardware.motors.Motor;
 
+@Configurable
 public class IntakeSubsystem extends SubsystemBase {
 
     Motor intLeft,intRight;

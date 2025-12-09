@@ -43,5 +43,8 @@ public DriveSubsystem(HardwareMap hardwaremap){
     public void driveFieldCentric(double strafeSpeed, double forwardSpeed, double turnSpeed, double angles){
             mecanumdrive.driveFieldCentric(strafeSpeed, forwardSpeed, turnSpeed, angles);  //squaredInputs nono
     }
+    public void driveRobotCentric(double strafeSpeed, double forwardSpeed, double turnSpeed){
+            mecanumdrive.driveRobotCentric(strafeSpeed, forwardSpeed, turnSpeed);
+    }
 
 }
