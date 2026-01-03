@@ -15,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
 
-            .mass(5);
+            .mass(11);
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
@@ -29,7 +29,7 @@ public class Constants {
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD);
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
-            .forwardPodY(-2.91339)
+            .forwardPodY(-2.91339) // random values for testing with the visualizer
             .strafePodX(0.27)
             .distanceUnit(DistanceUnit.INCH)
             .hardwareMapName("pinpoint")
