@@ -10,7 +10,7 @@ public class ShootingSubsystem extends SubsystemBase {
 
     Motor shooter;
 
-    public static double sht = 0.83 ;
+    public static double sht = 1 ;
 //    public static float idl ;
 
     public ShootingSubsystem(HardwareMap hardwareMap){
