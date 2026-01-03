@@ -196,4 +196,67 @@ public class AutoRedGoal extends OpMode {
 //                .build();
 //    }
 //}
+
+
+
+
+
+
+
+
+
+
+
+/*
+ShootPose1 - ShooterActivate
+
+      path1
+
+Push - ShootPose2 - Push - ShootPose3 - Push - StopShooter - Chamber1
+
+      path2
+
+IntakeActive
+
+      path3
+      waitCommand - Chamber2 - Chamber3
+
+      path4
+      intakeStop
+      ShootChamber
+      ShooterActivate
+
+Push - Chamber - Push - Chamber - Push - StopShooter - Chamber1
+
+      rotationPath(5)
+
+      path6
+
+intakeActive
+
+      path7
+      waitCommand - Chamber2 - Chamber3
+
+      path8
+      intakeStop
+      ShootChamber
+      ShooterActivate
+
+Push - Chamber - Push - Chamber - Push - StopShooter - Chamber1
+
+
+
+
+ */
+
+
+
+
+
+
+
+
+
+
+
 //
