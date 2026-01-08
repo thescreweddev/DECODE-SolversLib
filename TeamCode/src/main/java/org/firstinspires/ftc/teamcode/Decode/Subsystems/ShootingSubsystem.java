@@ -10,7 +10,7 @@ public class ShootingSubsystem extends SubsystemBase {
 
     Motor shooter;
 
-    public static double sht = 1 ;
+    public static double sht = 1     ;
 //    public static float idl ;
 
     public ShootingSubsystem(HardwareMap hardwareMap){
@@ -27,5 +27,6 @@ public class ShootingSubsystem extends SubsystemBase {
     public void idle(){
         shooter.set(0);
     }
+    public void in(){shooter.set(-1);}
 
 }

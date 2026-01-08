@@ -151,6 +151,12 @@ public class TeleOp extends CommandOpMode {
                 new InstantCommand(()-> shooter.setPower(0.83))
         );
 
+        gm1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
+                new InstantCommand(()-> shooter.in())
+        ).whenReleased(
+                new InstantCommand(()-> shooter.idle())
+        );
+
 
 
 

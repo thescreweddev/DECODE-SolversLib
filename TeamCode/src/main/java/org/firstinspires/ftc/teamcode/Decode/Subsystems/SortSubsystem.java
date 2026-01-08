@@ -10,6 +10,39 @@ import com.seattlesolvers.solverslib.hardware.servos.ServoEx;
 @Configurable
 public class SortSubsystem extends SubsystemBase {
 
+
+
+
+
+
+    /*
+
+
+                Testeaza oprire fortata a servo ului de rotire a camerei
+                tureta dual motor?
+                camera fata?
+                turet tracking cu odometrie
+                schimbare rola sortare?
+                reproiectare ridicare bila
+                reproiectare orpitor bila intake
+                schimbare ratio si unghi sortare
+                senzor distant/culoare intake
+                shooting sequence automat
+
+
+
+
+
+     */
+
+
+
+
+
+
+
+
+
     public final ServoEx spindexer;
     private final ServoEx pusher;
     public final RevColorSensorV3 colorSensor;

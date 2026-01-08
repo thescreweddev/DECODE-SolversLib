@@ -5,6 +5,7 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.util.Timer;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.teamcode.Decode.Subsystems.SortSubsystem;
 import org.firstinspires.ftc.teamcode.Decode.Subsystems.StopperSubsystem;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
+@Autonomous
 public class AutoBlue extends CommandOpMode {
 
     public Follower follower;
@@ -28,14 +30,14 @@ public class AutoBlue extends CommandOpMode {
     public StopperSubsystem stopper;
 
     private final Pose start = new Pose(20.5, 124.228, Math.toRadians(143));
-    private final Pose preload = new Pose(36.83, 121.25);
+    private final Pose preload = new Pose(40.83, 120.25);
     private final Pose path2 = new Pose(42.487, 84.585);
 
     public Path scorePreload,firststack;
 
     public void buildPaths(){
         scorePreload = new Path( new BezierLine(start, preload));
-        scorePreload.setConstantHeadingInterpolation(start.getHeading());
+        scorePreload.setLinearHeadingInterpolation(Math.toRadians(143), Math.toRadians(143));
 
         firststack = new Path(new BezierLine(preload,path2));
         firststack.setLinearHeadingInterpolation(Math.toRadians(143), Math.toRadians(180));
@@ -96,4 +98,17 @@ public class AutoBlue extends CommandOpMode {
                 )
         );
     }
+    @Override
+    public void run() {
+        super.run();
+        follower.update();
+        //autonomousPathUpdate();
+        telemetry.addData("path state", pathState);
+        telemetry.addData("x", follower.getPose().getX());
+        telemetry.addData("y", follower.getPose().getY());
+        telemetry.addData("heading", follower.getPose().getHeading());
+        telemetry.update();
+    }
 }
+
+
