@@ -2,19 +2,25 @@ package org.firstinspires.ftc.teamcode.Decode.Subsystems;
 
 import com.bylazar.gamepad.Gamepad;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.seattlesolvers.solverslib.drivebase.MecanumDrive;
+import com.seattlesolvers.solverslib.geometry.Pose2d;
 import com.seattlesolvers.solverslib.hardware.motors.Motor;
 import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
+
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 import java.util.function.Supplier;
 
 public class DriveSubsystem extends SubsystemBase {
 
     MecanumDrive mecanumdrive;
-    public GoBildaPinpointDriver pinpoint;
+    public static GoBildaPinpointDriver pinpoint;
     public Motor fr,fl,br,bl;
+
+
     //
 
 public DriveSubsystem(HardwareMap hardwaremap){
@@ -23,6 +29,8 @@ public DriveSubsystem(HardwareMap hardwaremap){
     pinpoint = hardwaremap.get(GoBildaPinpointDriver.class, "pinpoint");
     pinpoint.resetPosAndIMU();
     pinpoint.recalibrateIMU();
+
+
 
     fr = new Motor(hardwaremap,"fr", Motor.GoBILDA.RPM_312);
     fl = new Motor(hardwaremap,"fl", Motor.GoBILDA.RPM_312);

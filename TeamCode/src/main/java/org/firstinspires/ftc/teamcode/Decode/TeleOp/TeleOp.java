@@ -5,11 +5,14 @@ import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
+import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Decode.Commands.AutoRotateCommand;
 import org.firstinspires.ftc.teamcode.Decode.Commands.FieldCentric;
 import org.firstinspires.ftc.teamcode.Decode.Commands.IntakeCommand;
@@ -25,6 +28,8 @@ import org.firstinspires.ftc.teamcode.Decode.Subsystems.ShootingSubsystem;
 import org.firstinspires.ftc.teamcode.Decode.Subsystems.Slot;
 import org.firstinspires.ftc.teamcode.Decode.Subsystems.SortSubsystem;
 import org.firstinspires.ftc.teamcode.Decode.Subsystems.StopperSubsystem;
+import org.firstinspires.ftc.teamcode.Decode.Subsystems.Constants;
+import org.firstinspires.ftc.teamcode.Decode.Subsystems.TuretSubsystem;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp
 public class TeleOp extends CommandOpMode {
@@ -36,7 +41,18 @@ public class TeleOp extends CommandOpMode {
     IntakeSubsystem intake;
     ShootingSubsystem shooter;
     StopperSubsystem stopper;
-    boolean start = false;
+    TuretSubsystem ajustare;
+
+    public static Pose2D pose ;
+    public static double robotX = 71.5;
+    public static double robotY = 71.5;
+    public static double robotHeading = Math.toRadians(37);
+
+    double dx,dy,goalx = 12  ,goaly = 12 ,distance;
+
+
+
+    boolean start = false,inter;
    // public Slot.BallColor[] matchCase;
 
 //    Slot.BallColor[] colorCase = {
@@ -52,6 +68,7 @@ public class TeleOp extends CommandOpMode {
 
     @Override
     public void initialize() {
+        ajustare = new TuretSubsystem(hardwareMap);
         driveSubsystem = new DriveSubsystem(hardwareMap);
         intake = new IntakeSubsystem(hardwareMap);
         shooter = new ShootingSubsystem(hardwareMap);
@@ -78,6 +95,8 @@ public class TeleOp extends CommandOpMode {
                 gm1::getRightX
         );
         driveSubsystem.setDefaultCommand(driveRobotCentric);
+
+
 
         //-------------------------------------------------------------------------------------
 
@@ -119,9 +138,9 @@ public class TeleOp extends CommandOpMode {
         //---------------------------------------------------------------------------
 
         gm1.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenHeld(
-                new InstantCommand(()-> shooter.shoot())
-        ).whenReleased(
-                new InstantCommand(()-> shooter.idle())
+                new InstantCommand(()-> inter = true)
+                ).whenReleased(
+                new InstantCommand(()-> inter = false)
         );
         gm1.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON).whenHeld(
                 new PushBallCommand(sorter)
@@ -224,11 +243,44 @@ public class TeleOp extends CommandOpMode {
                     new InstantCommand(()-> stopper.Stop())
             );
         }
+
+
 //            schedule(
 //                    new RotateToSlotCommand(sortSubsystem,1)
 //            );
 
+        if(inter){
+            shooter.shoot(Constants.power(distance));
+        }else{
+            shooter.idle();
+        }
 
+        driveSubsystem.pinpoint.update();
+        driveSubsystem.pinpoint.getEncoderX();
+        driveSubsystem.pinpoint.getEncoderY();
+
+
+
+        pose = driveSubsystem.pinpoint.getPosition();
+        robotX =  pose.getX(DistanceUnit.INCH);
+        robotY =  pose.getY(DistanceUnit.INCH);
+        robotHeading = pose.getHeading(AngleUnit.RADIANS);
+
+        dx = goalx - robotX;
+        dy = goaly - robotY;
+
+        distance = Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
+
+
+
+        telemetry.addData("distance: ", distance);
+        telemetry.addData("motorPower", Constants.power(distance));
+        telemetry.addData("angle: ",Constants.angle(distance));
         telemetry.update();
+
+        schedule(
+                new InstantCommand(()-> ajustare.setPosition(Constants.angle(distance))),
+                new InstantCommand(()-> shooter.setPower(Constants.power(distance)))
+        );
     }
 }

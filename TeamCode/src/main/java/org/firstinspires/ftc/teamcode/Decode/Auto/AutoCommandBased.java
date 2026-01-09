@@ -31,7 +31,7 @@ public class AutoCommandBased extends CommandOpMode {
     public SortSubsystem sorter;
     public StopperSubsystem stopper;
 
-    private final Pose start = new Pose(123.878,124.228,Math.toRadians(37));
+    private final Pose start = new Pose(117.607,84.58,Math.toRadians(307));
     private final Pose preload = new Pose(111.7,121.5);
     private final Pose path2 = new Pose(99,86);
     private final Pose path3 = new Pose(127,83.5);
@@ -112,7 +112,7 @@ public class AutoCommandBased extends CommandOpMode {
 
                 new SequentialCommandGroup(
                         new InstantCommand(()-> sorter.retractPusher()),
-                        new InstantCommand(()-> shooter.shoot()),
+                        new InstantCommand(()-> shooter.shoot(1)),
                         new WaitCommand(500),
                         new InstantCommand(()-> sorter.rotateToShoot(0)),
                         new InstantCommand(()-> sorter.rotateToSlot(1)),
@@ -158,7 +158,7 @@ public class AutoCommandBased extends CommandOpMode {
                                         new InstantCommand(()-> intake.idle()),
                                         new InstantCommand(()-> stopper.Stop()),
                                         new InstantCommand(()-> follower.setMaxPower(1)),
-                                        new InstantCommand(()-> shooter.shoot())
+                                        new InstantCommand(()-> shooter.shoot(1))
                                 )
                         ),
                         new InstantCommand(()-> sorter.rotateToShoot(0)),

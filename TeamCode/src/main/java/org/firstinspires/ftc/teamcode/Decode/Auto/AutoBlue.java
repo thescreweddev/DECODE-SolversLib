@@ -67,7 +67,7 @@ public class AutoBlue extends CommandOpMode {
         schedule(
                 new SequentialCommandGroup(
                         new InstantCommand(()-> sorter.retractPusher()),
-                        new InstantCommand(()-> shooter.shoot()),
+                        new InstantCommand(()-> shooter.shoot(1)),
                         new WaitCommand(500),
                         new InstantCommand(()-> sorter.rotateToShoot(0)),
                         new InstantCommand(()-> sorter.rotateToSlot(1)),

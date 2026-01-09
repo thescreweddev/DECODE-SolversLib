@@ -75,7 +75,7 @@ public class SpindexerTest extends CommandOpMode {
                         new InstantCommand(()-> stopper.Retract())
                 )        );
         gm1.getGamepadButton(GamepadKeys.Button.CIRCLE).whenHeld(
-                new InstantCommand(()-> shooter.shoot())
+                new InstantCommand(()-> shooter.shoot(1))
         ).whenReleased(
                 new InstantCommand(()-> shooter.idle())
         );

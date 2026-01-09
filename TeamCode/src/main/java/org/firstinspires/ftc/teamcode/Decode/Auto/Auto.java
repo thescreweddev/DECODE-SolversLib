@@ -65,7 +65,7 @@ public class Auto extends OpMode {
                 new SequentialCommandGroup(
                         new InstantCommand(()->{
                             sorter.rotateToShoot(0);
-                            shooter.shoot();
+                            shooter.shoot(1);
                             new WaitCommand(300);
                             follower.followPath(scorePreload);
                             setPathState(1);
