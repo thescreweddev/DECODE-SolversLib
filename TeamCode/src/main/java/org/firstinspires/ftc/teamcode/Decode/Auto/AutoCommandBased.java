@@ -31,15 +31,16 @@ public class AutoCommandBased extends CommandOpMode {
     public SortSubsystem sorter;
     public StopperSubsystem stopper;
 
-    private final Pose start = new Pose(117.607,84.58,Math.toRadians(307));
-    private final Pose preload = new Pose(111.7,121.5);
-    private final Pose path2 = new Pose(99,86);
+    private final Pose start = new Pose(119,135.6,Math.toRadians(307));
+    private final Pose preload = new Pose(111,121);
+    private final Pose path2 = new Pose(97,88);
     private final Pose path3 = new Pose(127,83.5);
-    private final Pose path4 = new Pose(113,112);
-    private final Pose path5 = new Pose(113,112);
-    private final Pose path6 = new Pose(84.5,60);
-    private final Pose path7 = new Pose(134.5,59.31);
-    private final Pose path8 = new Pose(113,112);
+    private final Pose path4 = new Pose(120.46,126.33);
+    private final Pose b1 = new Pose(102,87);
+    private final Pose b2 = new Pose(113,87);
+    private final Pose b3 = new Pose(119,87);
+
+//    private final Pose path8 = new Pose(113,112);
 //
 //    private final Pose test = new Pose(107, 60);
 //
@@ -52,7 +53,7 @@ public class AutoCommandBased extends CommandOpMode {
 
 
 
-    private Path scorePreload,firststack, takeStack1,goShoot1;
+    private Path scorePreload,firststack, takeStack1,goShoot1,tele,bila1,bila2,bila3;
     private PathChain rotationPath,secondStack,takeStack2,goShoot2;
 
     public void buildPaths() {
@@ -63,10 +64,26 @@ public class AutoCommandBased extends CommandOpMode {
         firststack.setLinearHeadingInterpolation(Math.toRadians(37),Math.toRadians(355));
 
         takeStack1 = new Path(new BezierLine(path2,path3));
-        takeStack1.setLinearHeadingInterpolation(Math.toRadians(355), Math.toRadians(5));
+        takeStack1.setLinearHeadingInterpolation(Math.toRadians(355), Math.toRadians(355));
 
-        goShoot1 = new Path(new BezierLine(path3,preload));
+
+
+        goShoot1 = new Path(new BezierLine(b3/* path4 */,preload));                                              //    PATH4
         goShoot1.setLinearHeadingInterpolation(Math.toRadians(5), Math.toRadians(37));
+
+        tele = new Path(new BezierLine(preload, path4));
+        tele.setLinearHeadingInterpolation(Math.toRadians(37), Math.toRadians(355));
+
+
+
+        bila1 = new Path(new BezierLine(path2,b1));
+        bila1.setLinearHeadingInterpolation(Math.toRadians(355),Math.toRadians(355));
+
+        bila2 = new Path(new BezierLine(b1,b2));
+        bila2.setLinearHeadingInterpolation(Math.toRadians(355),Math.toRadians(355));
+
+        bila3 = new Path(new BezierLine(b2,b3));
+        bila3.setLinearHeadingInterpolation(Math.toRadians(355),Math.toRadians(355));
 
 //        firststack = follower.pathBuilder()
 //                .addPath(new BezierLine(test1, test2))
@@ -112,7 +129,7 @@ public class AutoCommandBased extends CommandOpMode {
 
                 new SequentialCommandGroup(
                         new InstantCommand(()-> sorter.retractPusher()),
-                        new InstantCommand(()-> shooter.shoot(1)),
+                        new InstantCommand(()-> shooter.shoot(0.71)),
                         new WaitCommand(500),
                         new InstantCommand(()-> sorter.rotateToShoot(0)),
                         new InstantCommand(()-> sorter.rotateToSlot(1)),
@@ -123,15 +140,15 @@ public class AutoCommandBased extends CommandOpMode {
                         new InstantCommand(()-> sorter.pushBall()),
                         new WaitCommand(500),
                         new InstantCommand(()-> sorter.retractPusher()),
-                        new WaitCommand(500),
+                        new WaitCommand(400),
                         new InstantCommand(()-> sorter.rotateToShoot(1)),
-                        new WaitCommand(200),
+                        new WaitCommand(300),
                         new InstantCommand(()-> sorter.pushBall()),
                         new WaitCommand(500),
                         new InstantCommand(()-> sorter.retractPusher()),
-                        new WaitCommand(500),
+                        new WaitCommand(400),
                         new InstantCommand(()-> sorter.rotateToShoot(2)),
-                        new WaitCommand(200),
+                        new WaitCommand(300),
                         new InstantCommand(()-> sorter.pushBall()),
                         new WaitCommand(1000),
                         new InstantCommand(()-> sorter.retractPusher()),
@@ -143,14 +160,18 @@ public class AutoCommandBased extends CommandOpMode {
                         new WaitCommand(1000),
                         new InstantCommand(()-> intake.active()),
                         new InstantCommand(()-> stopper.Retract()),
-                        new WaitCommand(500),
+
+
+
+                        /*
+                        new WaitCommand(1000),
                         new ParallelCommandGroup(
                                 new SequentialCommandGroup(
-                                        new InstantCommand(()-> follower.setMaxPower(0.6)),
+                                        new InstantCommand(()-> follower.setMaxPower(0.54)),
                                         new InstantCommand(()-> follower.followPath(takeStack1))
                                 ),
                                 new SequentialCommandGroup(
-                                        new WaitCommand(1100),
+                                        new WaitCommand(1200),
                                         new InstantCommand(()-> sorter.rotateToSlot(1)),
                                         new WaitCommand(365),
                                         new InstantCommand(()-> sorter.rotateToSlot(2)),
@@ -158,30 +179,82 @@ public class AutoCommandBased extends CommandOpMode {
                                         new InstantCommand(()-> intake.idle()),
                                         new InstantCommand(()-> stopper.Stop()),
                                         new InstantCommand(()-> follower.setMaxPower(1)),
-                                        new InstantCommand(()-> shooter.shoot(1))
+                                        new InstantCommand(()-> shooter.shoot(0.71))
                                 )
                         ),
+                        */
+
+                        new WaitCommand(1000),
+                        new ParallelCommandGroup(
+                                new SequentialCommandGroup(
+                                        new InstantCommand(()-> follower.setMaxPower(0.54)),
+                                        new InstantCommand(()-> follower.followPath(bila1))
+                                ),
+                                new SequentialCommandGroup(
+                                        new WaitCommand(1100),
+                                        new InstantCommand(()-> sorter.rotateToSlot(1))
+
+                                )
+                        ),
+                        new WaitCommand(500),
+                        new ParallelCommandGroup(
+                                new SequentialCommandGroup(
+                                        new InstantCommand(()-> follower.setMaxPower(0.54)),
+                                        new InstantCommand(()-> follower.followPath(bila2))
+                                ),
+                                new SequentialCommandGroup(
+                                        new WaitCommand(1300),
+                                        new InstantCommand(()-> sorter.rotateToSlot(2))
+
+                                )
+                        ),
+                        new WaitCommand(500),
+                        new ParallelCommandGroup(
+                                new SequentialCommandGroup(
+                                        new InstantCommand(()-> follower.setMaxPower(0.54)),
+                                        new InstantCommand(()-> follower.followPath(bila3))
+                                ),
+                                new SequentialCommandGroup(
+                                        new WaitCommand(1200),
+                                        new InstantCommand(()-> intake.idle()),
+                                        new InstantCommand(()-> stopper.Stop()),
+                                        new InstantCommand(()-> follower.setMaxPower(1)),
+                                        new InstantCommand(()-> shooter.shoot(0.71))
+                                )
+                        ),
+
+
+
+
+
+
                         new InstantCommand(()-> sorter.rotateToShoot(0)),
                         new InstantCommand(()-> follower.followPath(goShoot1)),
                         new WaitCommand(2000),
                         new InstantCommand(()-> sorter.pushBall()),
                         new WaitCommand(500),
                         new InstantCommand(()-> sorter.retractPusher()),
-                        new WaitCommand(500),
+                        new WaitCommand(400),
                         new InstantCommand(()-> sorter.rotateToShoot(1)),
-                        new WaitCommand(200),
+                        new WaitCommand(300),
                         new InstantCommand(()-> sorter.pushBall()),
                         new WaitCommand(500),
                         new InstantCommand(()-> sorter.retractPusher()),
-                        new WaitCommand(500),
+                        new WaitCommand(400),
                         new InstantCommand(()-> sorter.rotateToShoot(2)),
-                        new WaitCommand(200),
+                        new WaitCommand(300),
                         new InstantCommand(()-> sorter.pushBall()),
                         new WaitCommand(1000),
                         new InstantCommand(()-> sorter.retractPusher()),
                         new InstantCommand(()-> shooter.idle()),
                         new WaitCommand(500),
-                        new InstantCommand(()-> sorter.rotateToSlot(0))
+                        new InstantCommand(()-> sorter.rotateToSlot(0)),
+                        new InstantCommand(()-> follower.setMaxPower(0.55)),
+                        new WaitCommand(500),
+                        new InstantCommand(()-> follower.followPath(tele)),
+
+                        new WaitCommand(300)
+
 
 
 

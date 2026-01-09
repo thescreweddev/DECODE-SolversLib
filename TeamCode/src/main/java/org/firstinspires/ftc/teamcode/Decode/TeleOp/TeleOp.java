@@ -52,7 +52,7 @@ public class TeleOp extends CommandOpMode {
 
 
 
-    boolean start = false,inter;
+    boolean start = false,inter,outint;
    // public Slot.BallColor[] matchCase;
 
 //    Slot.BallColor[] colorCase = {
@@ -171,9 +171,9 @@ public class TeleOp extends CommandOpMode {
         );
 
         gm1.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(
-                new InstantCommand(()-> shooter.in())
+                new InstantCommand(()-> outint = true)
         ).whenReleased(
-                new InstantCommand(()-> shooter.idle())
+                new InstantCommand(()-> outint = false)
         );
 
 
@@ -249,8 +249,10 @@ public class TeleOp extends CommandOpMode {
 //                    new RotateToSlotCommand(sortSubsystem,1)
 //            );
 
-        if(inter){
+        if(inter && !outint){
             shooter.shoot(Constants.power(distance));
+        }else if(!inter && outint){
+            shooter.shoot(-0.5);
         }else{
             shooter.idle();
         }
