@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.Decode.Subsystems.SortSubsystem;
 import org.firstinspires.ftc.teamcode.Decode.Subsystems.StopperSubsystem;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "🔷BlueGoal🔷")
+@Autonomous(name = "🔷BlueGoal🔷", group = "A")
 public class AutoBlue extends CommandOpMode {
 
     public Follower follower;
