@@ -184,6 +184,11 @@ public class TeleOp extends CommandOpMode {
 
         //==========================================================================
 
+        gm2.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(
+                new InstantCommand(()-> driveSubsystem.resetPinpoint())
+        ).whenReleased(
+                new InstantCommand(()-> gamepad2.rumble(100))
+        );
 
 
 
@@ -278,6 +283,7 @@ public class TeleOp extends CommandOpMode {
         telemetry.addData("distance: ", distance);
         telemetry.addData("motorPower", Constants.power(distance));
         telemetry.addData("angle: ",Constants.angle(distance));
+        telemetry.addData("PPHeading: ", driveSubsystem.pinpoint.getHeading(AngleUnit.DEGREES));
         telemetry.update();
 
         schedule(

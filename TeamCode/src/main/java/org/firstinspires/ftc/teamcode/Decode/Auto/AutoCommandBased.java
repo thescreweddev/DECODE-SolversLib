@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.Decode.Subsystems.SortSubsystem;
 import org.firstinspires.ftc.teamcode.Decode.Subsystems.StopperSubsystem;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous
+@Autonomous(name = "🔴RedGoal🔴")
 public class AutoCommandBased extends CommandOpMode {
 
     public Follower follower;
@@ -40,14 +40,8 @@ public class AutoCommandBased extends CommandOpMode {
     private final Pose b2 = new Pose(113,87);
     private final Pose b3 = new Pose(119,87);
 
-//    private final Pose path8 = new Pose(113,112);
-//
-//    private final Pose test = new Pose(107, 60);
-//
-//    private final Pose rotate = new Pose(108.65, 121.25);
 
 
-//    private final Pose start = new Pose(123.878,124.228);
     private final Pose test1 = new Pose(31.5, 126);
     private final Pose test2 = new Pose(112.5, 102);
 
@@ -85,23 +79,6 @@ public class AutoCommandBased extends CommandOpMode {
         bila3 = new Path(new BezierLine(b2,b3));
         bila3.setLinearHeadingInterpolation(Math.toRadians(355),Math.toRadians(355));
 
-//        firststack = follower.pathBuilder()
-//                .addPath(new BezierLine(test1, test2))
-//                .setLinearHeadingInterpolation(Math.toRadians(270),Math.toRadians(270))
-//                .build();
-
-////        rot = follower.pathBuilder()
-////                .addPath(new BezierLine(preload,rotate))
-////                .setLinearHeadingInterpolation(Math.toRadians(37 ), Math.toRadians(350))
-////                .build();
-//
-//        takeStack1 = new Path(new BezierLine(test, path3));
-//        takeStack1.setLinearHeadingInterpolation(Math.toRadians(270),Math.toRadians(0));
-
-//        takeStack1 = follower.pathBuilder()
-//                .addPath(new BezierLine(rotate, path3))
-//                .setLinearHeadingInterpolation(Math.toRadians(350),Math.toRadians(0))
-//                .build();
 
     }
 
@@ -278,83 +255,3 @@ public class AutoCommandBased extends CommandOpMode {
         telemetry.update();
     }
 }
-
-
-//    public void autonomousPathUpdate(){
-//        switch(pathState){
-//            case 0:
-//                schedule(
-//                        new SequentialCommandGroup(
-//                                new InstantCommand(()->sorter.rotateToShoot(0)),
-//                                new InstantCommand(()-> shooter.shoot()),
-//                                new WaitCommand(2000),
-//                                new InstantCommand(()-> follower.followPath(scorePreload))
-//                        )
-//                );
-////                sorter.rotateToShoot(0);
-////                shooter.shoot();
-////                follower.followPath(scorePreload);
-//                setPathState(1);
-//                break;
-//            case 1:
-//                sorter.pushBall();
-//                setPathState(2);
-//                break;
-//
-//
-//            case 2:
-//                if(!follower.isBusy()) {
-//                    /* Score Preload */
-//                    /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
-//                    follower.followPath(firststack,true);
-//                    setPathState(2);
-//                }
-//                break;
-//        }
-//    }
-//    public void setPathState(int pState) {
-//        pathState = pState;
-//        pathTimer.resetTimer();
-//    }
-
-
-//    @Override
-//    public void init() {
-//        pathTimer = new Timer();
-//        opmodeTimer = new Timer();
-//        opmodeTimer.resetTimer();
-//
-//        follower = Constants.createFollower(hardwareMap);
-//        buildPaths();
-//        follower.setStartingPose(start);
-//
-//        intake = new IntakeSubsystem(hardwareMap);
-//        shooter = new ShootingSubsystem(hardwareMap);
-//        sorter = new SortSubsystem(hardwareMap);
-//        stopper = new StopperSubsystem(hardwareMap);
-//    }
-//
-//    @Override
-//    public void loop() {
-//        follower.update();
-//        autonomousPathUpdate();
-//        // Feedback to Driver Hub for debugging
-//        telemetry.addData("path state", pathState);
-//        telemetry.addData("x", follower.getPose().getX());
-//        telemetry.addData("y", follower.getPose().getY());
-//        telemetry.addData("heading", follower.getPose().getHeading());
-//        telemetry.update();
-//
-//    }
-//    @Override
-//    public void init_loop() {}
-//    /** This method is called once at the start of the OpMode.
-//     * It runs all the setup actions, including building paths and starting the path system **/
-//    @Override
-//    public void start() {
-//        opmodeTimer.resetTimer();
-//        setPathState(0);
-//    }
-//    /** We do not use this because everything should automatically disable **/
-//    @Override
-//    public void stop() {}

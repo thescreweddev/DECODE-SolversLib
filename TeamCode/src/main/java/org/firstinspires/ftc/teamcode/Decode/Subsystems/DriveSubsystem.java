@@ -48,6 +48,10 @@ public DriveSubsystem(HardwareMap hardwaremap){
     this.mecanumdrive = new MecanumDrive(false, fl, fr, bl, br);
 
 }
+    public void resetPinpoint(){
+            pinpoint.resetPosAndIMU();
+            pinpoint.recalibrateIMU();
+    }
     public void driveFieldCentric(double strafeSpeed, double forwardSpeed, double turnSpeed, double angles){
             mecanumdrive.driveFieldCentric(strafeSpeed, forwardSpeed, turnSpeed, angles);  //squaredInputs nono
     }

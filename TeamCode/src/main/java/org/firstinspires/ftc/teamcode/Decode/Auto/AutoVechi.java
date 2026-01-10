@@ -8,6 +8,7 @@ import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Decode.Subsystems.IntakeSubsystem;
@@ -17,7 +18,8 @@ import org.firstinspires.ftc.teamcode.Decode.Subsystems.StopperSubsystem;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous(name = "Example Auto", group = "Examples")
-public class   AutoRedGoal extends OpMode {
+@Disabled
+public class   AutoVechi extends OpMode {
 
        public Follower follower;
        public IntakeSubsystem intake;
