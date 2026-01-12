@@ -257,7 +257,7 @@ public class TeleOp extends CommandOpMode {
         if(inter && !outint){
             shooter.shoot(Constants.power(distance));
         }else if(!inter && outint){
-            shooter.shoot(-0.5);
+            shooter.shoot(-0.67);                 //haha 67
         }else{
             shooter.idle();
         }

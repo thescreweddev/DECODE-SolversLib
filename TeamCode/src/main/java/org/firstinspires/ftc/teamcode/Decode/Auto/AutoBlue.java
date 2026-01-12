@@ -30,14 +30,14 @@ public class AutoBlue extends CommandOpMode {
     public SortSubsystem sorter;
     public StopperSubsystem stopper;
 
-    private final Pose start = new Pose(25, 135.50, Math.toRadians(143));
-    private final Pose preload = new Pose(33, 121);
+    private final Pose start = new Pose(25, 135.50, Math.toRadians(233));
+    private final Pose preload = new Pose(36.0, 118.7);
     private final Pose path2 = new Pose(47, 88);
     private final Pose path3 = new Pose(127,83.5);
     private final Pose path4 = new Pose(23.54,126.33);
-    private final Pose b1 = new Pose(42,87);
-    private final Pose b2 = new Pose(31,87);
-    private final Pose b3 = new Pose(25,87);
+    private final Pose b1 = new Pose(40.5,87);
+    private final Pose b2 = new Pose(30.5,87);
+    private final Pose b3 = new Pose(22,87);
 
     public Path scorePreload,firststack,takeStack1,goShoot1, tele, bila1,bila2,bila3;
 
@@ -54,21 +54,21 @@ public class AutoBlue extends CommandOpMode {
 
 
         goShoot1 = new Path(new BezierLine(b3/* path4 */,preload));                                              //    PATH4
-        goShoot1.setLinearHeadingInterpolation(Math.toRadians(175), Math.toRadians(143));
+        goShoot1.setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(143));
 
         tele = new Path(new BezierLine(preload, path4));
-        tele.setLinearHeadingInterpolation(Math.toRadians(143), Math.toRadians(175));
+        tele.setLinearHeadingInterpolation(Math.toRadians(143), Math.toRadians(85));
 
 
 
         bila1 = new Path(new BezierLine(path2,b1));
-        bila1.setLinearHeadingInterpolation(Math.toRadians(175),Math.toRadians(175));
+        bila1.setLinearHeadingInterpolation(Math.toRadians(180),Math.toRadians(180));
 
         bila2 = new Path(new BezierLine(b1,b2));
-        bila2.setLinearHeadingInterpolation(Math.toRadians(175),Math.toRadians(175));
+        bila2.setLinearHeadingInterpolation(Math.toRadians(180),Math.toRadians(180));
 
         bila3 = new Path(new BezierLine(b2,b3));
-        bila3.setLinearHeadingInterpolation(Math.toRadians(175),Math.toRadians(175));
+        bila3.setLinearHeadingInterpolation(Math.toRadians(180),Math.toRadians(180));
 
     }
 
