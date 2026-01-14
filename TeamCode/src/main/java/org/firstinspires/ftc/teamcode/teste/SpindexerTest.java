@@ -92,9 +92,9 @@ public class SpindexerTest extends CommandOpMode {
     public void run() {
         super.run();
 
-        telemetry.addData("red",sorter.colorSensor.red());
-        telemetry.addData("blue",sorter.colorSensor.blue());
-        telemetry.addData("green",sorter.colorSensor.green());
+//        telemetry.addData("red",sorter.colorSensor.red());
+//        telemetry.addData("blue",sorter.colorSensor.blue());
+//        telemetry.addData("green",sorter.colorSensor.green());
         telemetry.update();
     }
 }

@@ -9,20 +9,17 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 
 @TeleOp
 public class SenzorCuloare extends LinearOpMode {
-    ColorSensor c1,c2,c3;
-    CRServo servo;
+    ColorSensor c1,c2;
 
     @Override
     public void runOpMode(){
         c1 = hardwareMap.get(ColorSensor.class, "c1");
-//        c2 = hardwareMap.get(ColorSensor.class, "c2");
-//        c3 = hardwareMap.get(ColorSensor.class, "c3");
-        servo = hardwareMap.get(CRServo.class, "servo");
+        c2 = hardwareMap.get(ColorSensor.class, "c2");
 
         waitForStart();
         while(opModeIsActive()){
 
-            servo.setPower(1);
+
             telemetry.addData("red1", c1.red());
             telemetry.addData("green1", c1.green());
             telemetry.addData("blue1",c1.green());
@@ -33,12 +30,22 @@ public class SenzorCuloare extends LinearOpMode {
             telemetry.addData("blue2",c2.green());
             telemetry.addData("alpha2",c2.alpha());
 
-            telemetry.addData("red3", c3.red());
-            telemetry.addData("green3", c3.green());
-            telemetry.addData("blue3",c3.green());
-            telemetry.addData("alpha3",c3.alpha());
-
             telemetry.update();
         }
     }
 }
+
+
+
+/*
+
+function that scans for ball when the spindexer isnt moving with a boolean also when ball count is satisfied turn off searching
+ next slot function
+ set ball count to 0
+
+
+ check continuously for the color / when found, spinFunction(), pause searching, start searching ,
+
+rumble on ball detected
+
+ */

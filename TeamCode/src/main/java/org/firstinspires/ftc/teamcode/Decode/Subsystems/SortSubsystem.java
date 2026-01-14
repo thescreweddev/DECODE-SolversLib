@@ -45,7 +45,7 @@ public class SortSubsystem extends SubsystemBase {
 
     public final ServoEx spindexer;
     private final ServoEx pusher;
-    public final RevColorSensorV3 colorSensor;
+    //public final RevColorSensorV3 colorSensor;
 
     public final Slot[] slots = new Slot[3];
 
@@ -62,7 +62,7 @@ public class SortSubsystem extends SubsystemBase {
         super();
         spindexer = new ServoEx(hardwareMap,"spin");
         pusher = new ServoEx(hardwareMap,"arm");
-        colorSensor = hardwareMap.get(RevColorSensorV3.class, "colorsensor");
+       // colorSensor = hardwareMap.get(RevColorSensorV3.class, "colorsensor");
 
         slots[0] = new Slot(0, /*1*/ 0.3, 0.11);
         slots[1] = new Slot(1, /*2*/ 0.545, 0.35);
@@ -122,16 +122,16 @@ public class SortSubsystem extends SubsystemBase {
     // comenzi culoare
 
     public Slot.BallColor detectColor() {
-        int r = colorSensor.red();
-        int g = colorSensor.green();
-        int b = colorSensor.blue();
+//        int r = colorSensor.red();
+//        int g = colorSensor.green();
+//        int b = colorSensor.blue();
 
-        if (g > r && g > b) {
-            return Slot.BallColor.GREEN;
-        }
-        if ((r + b) > (2 * g)) {
-            return Slot.BallColor.VIOLET;
-        }
+//        if (g > r && g > b) {
+//            return Slot.BallColor.GREEN;
+//        }
+//        if ((r + b) > (2 * g)) {
+//            return Slot.BallColor.VIOLET;
+//        }
 
         return Slot.BallColor.NONE;
     }

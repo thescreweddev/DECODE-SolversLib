@@ -22,6 +22,7 @@ import org.firstinspires.ftc.teamcode.Decode.Commands.RobotCentric;
 import org.firstinspires.ftc.teamcode.Decode.Commands.RotateToShoot;
 import org.firstinspires.ftc.teamcode.Decode.Commands.RotateToSlotCommand;
 import org.firstinspires.ftc.teamcode.Decode.Commands.ShootSequence;
+import org.firstinspires.ftc.teamcode.Decode.Subsystems.BallDetectionSubsystem;
 import org.firstinspires.ftc.teamcode.Decode.Subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.Decode.Subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Decode.Subsystems.ShootingSubsystem;
@@ -37,6 +38,7 @@ public class TeleOp extends CommandOpMode {
    // int colorcase=1;
 
     DriveSubsystem driveSubsystem;
+    BallDetectionSubsystem baller;
     SortSubsystem sorter;
     IntakeSubsystem intake;
     ShootingSubsystem shooter;
@@ -74,6 +76,7 @@ public class TeleOp extends CommandOpMode {
         shooter = new ShootingSubsystem(hardwareMap);
         sorter = new SortSubsystem(hardwareMap);
         stopper = new StopperSubsystem(hardwareMap);
+        baller = new BallDetectionSubsystem(hardwareMap);
 
 
 
@@ -101,24 +104,42 @@ public class TeleOp extends CommandOpMode {
         //-------------------------------------------------------------------------------------
 
         gm1.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(
-                new RotateToSlotCommand(sorter,0)
+                new ParallelCommandGroup(
+                        new RotateToSlotCommand(sorter,0),
+                        new InstantCommand(()-> baller.setBallerState(false))
+                )
         );
         gm1.getGamepadButton(GamepadKeys.Button.TRIANGLE).whenPressed(
-                new RotateToShoot(sorter,0)
+                new ParallelCommandGroup(
+                        new RotateToShoot(sorter,0),
+                        new InstantCommand(()-> baller.setBallerState(true))
+                )
         );
 
         gm1.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(
-                new RotateToSlotCommand(sorter,1)
+                new ParallelCommandGroup(
+                        new RotateToSlotCommand(sorter,1),
+                        new InstantCommand(()-> baller.setBallerState(false))
+                )
         );
         gm1.getGamepadButton(GamepadKeys.Button.SQUARE).whenPressed(
-                new RotateToShoot(sorter,1)
+                new ParallelCommandGroup(
+                        new RotateToShoot(sorter,1),
+                        new InstantCommand(()-> baller.setBallerState(true))
+                )
         );
 
         gm1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(
-                new RotateToSlotCommand(sorter,2)
+                new ParallelCommandGroup(
+                        new RotateToSlotCommand(sorter,2),
+                        new InstantCommand(()-> baller.setBallerState(false))
+                )
         );
         gm1.getGamepadButton(GamepadKeys.Button.CROSS).whenReleased(
-                new RotateToShoot(sorter,2)
+                new ParallelCommandGroup(
+                        new RotateToShoot(sorter,2),
+                        new InstantCommand(()-> baller.setBallerState(true))
+                )
         );
 
         //---------------------------------------------------------------------------
@@ -284,11 +305,15 @@ public class TeleOp extends CommandOpMode {
         telemetry.addData("motorPower", Constants.power(distance));
         telemetry.addData("angle: ",Constants.angle(distance));
         telemetry.addData("PPHeading: ", driveSubsystem.pinpoint.getHeading(AngleUnit.DEGREES));
+        telemetry.addData("  ", "  ");
+        telemetry.addData("alpha1:", baller.co1.alpha());
+        telemetry.addData("alpha2:", baller.co2.alpha());
         telemetry.update();
 
         schedule(
                 new InstantCommand(()-> ajustare.setPosition(Constants.angle(distance))),
-                new InstantCommand(()-> shooter.setPower(Constants.power(distance)))
+                new InstantCommand(()-> shooter.setPower(Constants.power(distance))),
+                new InstantCommand(()-> baller.ballInside(gamepad1))
         );
     }
 }
