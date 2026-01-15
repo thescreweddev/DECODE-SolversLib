@@ -10,7 +10,7 @@ public class BallDetectionSubsystem extends SubsystemBase {
 
     public RevColorSensorV3 co1,co2;
     public int ballCount;
-    public boolean shooting;
+    public boolean shooting,canDetectIntake = false;
 
     public BallDetectionSubsystem(HardwareMap hardwareMap){
         super();
@@ -20,7 +20,7 @@ public class BallDetectionSubsystem extends SubsystemBase {
     }
 
     public void ballInside(Gamepad gamepad) {
-        if((co1.alpha()>100 || co2.alpha()>100) && shooting == false){
+        if((co1.alpha()>150 || co2.alpha()>150) && shooting == false){
             gamepad.rumble(100);
         }
     }
@@ -28,6 +28,13 @@ public class BallDetectionSubsystem extends SubsystemBase {
     public void setBallerState(boolean bull){
         shooting = bull;
     }
+
+    public void autoDetection(boolean CANHEDOIT ){
+        canDetectIntake = CANHEDOIT;
+    }
+
+
+
 
 
 }

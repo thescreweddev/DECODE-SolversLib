@@ -9,7 +9,7 @@ import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 @Configurable
 public class ShootingSubsystem extends SubsystemBase {
 
-    public MotorEx shut;
+    public MotorEx shut,shut2;
 
     public static double sht = 0.83     ;
 //    public static float idl ;
@@ -17,6 +17,7 @@ public class ShootingSubsystem extends SubsystemBase {
     public ShootingSubsystem(HardwareMap hardwareMap){
         super();
         shut = new MotorEx(hardwareMap,"shooter");
+        shut2 = new MotorEx(hardwareMap,"shooter2");
     }
     public void setPower(double sht){
         this.sht = sht;
@@ -24,11 +25,16 @@ public class ShootingSubsystem extends SubsystemBase {
 
     public void shoot(double ang){
         shut.set(ang);
+        shut2.set(ang);
     }
     public void idle(){
         shut.set(0);
+        shut2.set(0);
     }
-    public void in(){shut.set(-0.8);}
+    public void in(){
+        shut.set(-0.8);
+        shut2.set(-0.8);
+    }
 
 
 

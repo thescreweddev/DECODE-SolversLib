@@ -4,7 +4,6 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
-import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
@@ -21,24 +20,26 @@ import org.firstinspires.ftc.teamcode.Decode.Subsystems.SortSubsystem;
 import org.firstinspires.ftc.teamcode.Decode.Subsystems.StopperSubsystem;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
+@Autonomous(name = "🔴9_GOAL🔴", group = "1")
+public class AutoNineGoal extends CommandOpMode {
 
-//23  PPG
-//22  PGP
-//21  GPP
-
-@Autonomous(name = "RedGoal", group = "A")
-public class AutoCommandBased extends CommandOpMode {
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     public Follower follower;
-    private Timer pathTimer, actionTimer, opmodeTimer;
     public BallDetectionSubsystem baller;
-    private int pathState;
     public RotateWhenFull rotaet;
+    public boolean intervension = true;
 
+    private Timer pathTimer, actionTimer, opmodeTimer;
+    private int pathState;
     public IntakeSubsystem intake;
     public ShootingSubsystem shooter;
     public SortSubsystem sorter;
     public StopperSubsystem stopper;
+
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 
     private final Pose start = new Pose(119,135.6,Math.toRadians(307));
     private final Pose preload = new Pose(111,121);
@@ -57,7 +58,10 @@ public class AutoCommandBased extends CommandOpMode {
 
 
     private Path scorePreload,firststack, takeStack1,goShoot1,tele,bila1,bila2,bila3;
-    private PathChain rotationPath,secondStack,takeStack2,goShoot2;
+
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 
     public void buildPaths() {
         scorePreload = new Path(new BezierLine(start,preload));
@@ -79,17 +83,19 @@ public class AutoCommandBased extends CommandOpMode {
 
 
 
-        bila1 = new Path(new BezierLine(path2,b1));
-        bila1.setLinearHeadingInterpolation(Math.toRadians(355),Math.toRadians(355));
-
-        bila2 = new Path(new BezierLine(b1,b2));
-        bila2.setLinearHeadingInterpolation(Math.toRadians(355),Math.toRadians(355));
-
-        bila3 = new Path(new BezierLine(b2,b3));
-        bila3.setLinearHeadingInterpolation(Math.toRadians(355),Math.toRadians(355));
+//        bila1 = new Path(new BezierLine(path2,b1));
+//        bila1.setLinearHeadingInterpolation(Math.toRadians(355),Math.toRadians(355));
+//
+//        bila2 = new Path(new BezierLine(b1,b2));
+//        bila2.setLinearHeadingInterpolation(Math.toRadians(355),Math.toRadians(355));
+//
+//        bila3 = new Path(new BezierLine(b2,b3));
+//        bila3.setLinearHeadingInterpolation(Math.toRadians(355),Math.toRadians(355));
 
 
     }
+
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -109,16 +115,19 @@ public class AutoCommandBased extends CommandOpMode {
         stopper = new StopperSubsystem(hardwareMap);
         baller = new BallDetectionSubsystem(hardwareMap);
 
-        rotaet = new RotateWhenFull(sorter,baller);
+        rotaet = new RotateWhenFull(sorter, baller);
+        rotaet.CurentIndex = 0;
 
         baller.canDetectIntake = false;
+        intervension = false;
         //setPathState(0);
 
         waitForStart();
 
         schedule(
-
                 new SequentialCommandGroup(
+                        new InstantCommand(()-> intervension = false),
+                        new InstantCommand(()-> baller.autoDetection(false)),
                         new InstantCommand(()-> sorter.retractPusher()),
                         new InstantCommand(()-> shooter.shoot(0.71)),
                         new WaitCommand(500),
@@ -151,121 +160,71 @@ public class AutoCommandBased extends CommandOpMode {
                         new WaitCommand(1000),
                         new InstantCommand(()-> intake.active()),
                         new InstantCommand(()-> stopper.Retract()),
-
-
-
-                        /*
                         new WaitCommand(1000),
                         new ParallelCommandGroup(
                                 new SequentialCommandGroup(
-                                        new InstantCommand(()-> follower.setMaxPower(0.54)),
+                                        new InstantCommand(()-> baller.autoDetection(true)),
+                                        new InstantCommand(()-> intervension = true),
+                                        new InstantCommand(()-> follower.setMaxPower(0.40)),
+                                        new WaitCommand(200),
                                         new InstantCommand(()-> follower.followPath(takeStack1))
-                                ),
-                                new SequentialCommandGroup(
-                                        new WaitCommand(1200),
-                                        new InstantCommand(()-> sorter.rotateToSlot(1)),
-                                        new WaitCommand(365),
-                                        new InstantCommand(()-> sorter.rotateToSlot(2)),
-                                        new WaitCommand(1500),
-                                        new InstantCommand(()-> intake.idle()),
-                                        new InstantCommand(()-> stopper.Stop()),
-                                        new InstantCommand(()-> follower.setMaxPower(1)),
-                                        new InstantCommand(()-> shooter.shoot(0.71))
                                 )
-                        ),
-                        */
-
-                        new WaitCommand(1000),
-                        new ParallelCommandGroup(
-                                new SequentialCommandGroup(
-                                        new InstantCommand(()-> follower.setMaxPower(0.54)),
-                                        new InstantCommand(()-> follower.followPath(bila1))
-                                ),
-                                new SequentialCommandGroup(
-                                        new WaitCommand(1100),
-                                        new InstantCommand(()-> sorter.rotateToSlot(1))
-
-                                )
-                        ),
-                        new WaitCommand(500),
-                        new ParallelCommandGroup(
-                                new SequentialCommandGroup(
-                                        new InstantCommand(()-> follower.setMaxPower(0.54)),
-                                        new InstantCommand(()-> follower.followPath(bila2))
-                                ),
-                                new SequentialCommandGroup(
-                                        new WaitCommand(1300),
-                                        new InstantCommand(()-> sorter.rotateToSlot(2))
-
-                                )
-                        ),
-                        new WaitCommand(500),
-                        new ParallelCommandGroup(
-                                new SequentialCommandGroup(
-                                        new InstantCommand(()-> follower.setMaxPower(0.54)),
-                                        new InstantCommand(()-> follower.followPath(bila3))
-                                ),
-                                new SequentialCommandGroup(
-                                        new WaitCommand(1200),
-                                        new InstantCommand(()-> intake.idle()),
-                                        new InstantCommand(()-> stopper.Stop()),
-                                        new InstantCommand(()-> follower.setMaxPower(1)),
-                                        new InstantCommand(()-> shooter.shoot(0.71))
-                                )
-                        ),
-
-
-
-
-
-
-                        new InstantCommand(()-> sorter.rotateToShoot(0)),
-                        new InstantCommand(()-> follower.followPath(goShoot1)),
-                        new WaitCommand(2000),
-                        new InstantCommand(()-> sorter.pushBall()),
-                        new WaitCommand(500),
-                        new InstantCommand(()-> sorter.retractPusher()),
-                        new WaitCommand(400),
-                        new InstantCommand(()-> sorter.rotateToShoot(1)),
-                        new WaitCommand(300),
-                        new InstantCommand(()-> sorter.pushBall()),
-                        new WaitCommand(500),
-                        new InstantCommand(()-> sorter.retractPusher()),
-                        new WaitCommand(400),
-                        new InstantCommand(()-> sorter.rotateToShoot(2)),
-                        new WaitCommand(300),
-                        new InstantCommand(()-> sorter.pushBall()),
-                        new WaitCommand(1000),
-                        new InstantCommand(()-> sorter.retractPusher()),
-                        new InstantCommand(()-> shooter.idle()),
-                        new WaitCommand(500),
-                        new InstantCommand(()-> sorter.rotateToSlot(0)),
-                        new InstantCommand(()-> follower.setMaxPower(0.55)),
-                        new WaitCommand(500),
-                        new InstantCommand(()-> follower.followPath(tele)),
-
-                        new WaitCommand(300)
-
-
-
-
+                        )
 
                 )
         );
 
+/*
+initialization,
+shoot preload
+go to first stack
+turn on search
+turn on intervention
+paralel command to intake the balls and switch while doing it
+after the path ends you turn off search and intervesion
 
+switch to shoot the 3 balls
+go to last stack
+repeat the parralel go and take
+turn off the 2 things
+go shoot
+park
+
+ */
 
     }
+
+
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     public void run() {
-        schedule(
-                new RotateWhenFull(sorter,baller)
-        );
+
         super.run();
         follower.update();
+        sorter.setDefaultCommand(rotaet);
+        if(baller.canDetectIntake == true){
+            schedule(
+                    new InstantCommand(()-> sorter.rotateToSlot(rotaet.index(rotaet.CurentIndex)))
+            );
+        }
+
+
+        if(baller.canDetectIntake == false && intervension == true){
+            schedule(
+                    new SequentialCommandGroup(
+                            new WaitCommand(600),
+                            new InstantCommand(()-> baller.autoDetection(true) )
+                    )
+            );
+        }
         //autonomousPathUpdate();
 
+        telemetry.addData("ALpha1: ",baller.co1.alpha());
+        telemetry.addData("ALpha2: ",baller.co2.alpha());
+        telemetry.addData("index", rotaet.index(rotaet.CurentIndex));
+        telemetry.addData("state: ", baller.canDetectIntake);
         telemetry.update();
     }
+
 }

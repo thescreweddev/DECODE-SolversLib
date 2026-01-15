@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.Decode.Subsystems.SortSubsystem;
 public class testTureta extends OpMode {
 
     public Servo servo;
-    public Motor motor;
+    public Motor tur1,tur2;
     public boolean t=false;
     public SortSubsystem sorter;
 
@@ -22,7 +22,8 @@ public class testTureta extends OpMode {
 
     @Override
     public void init() {
-        motor = new Motor(hardwareMap,"shooter");
+        tur1 = new Motor(hardwareMap,"shooter");
+        tur2 = new Motor(hardwareMap,"shooter2");
         servo = hardwareMap.get(Servo.class," ajustare");
         sorter = new SortSubsystem(hardwareMap);
         servo.setPosition(0 );
@@ -61,9 +62,11 @@ public class testTureta extends OpMode {
         }
 
         if(t){
-            motor.set(motorSpeed);
+            tur1.set(motorSpeed);
+            tur2.set(motorSpeed);
         }else{
-            motor.set(0);
+            tur1.set(0);
+            tur2.set(0);
         }
         servo.setPosition(servoPose);
 

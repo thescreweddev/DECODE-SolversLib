@@ -7,11 +7,32 @@ import org.opencv.core.Mat;
 public class Constants {
 
 
-    public static double angle(double ds){
-        return MathFunctions.clamp( 2.10417e-7 * Math.pow(ds,4) - 0.0000355417 * Math.pow(ds, 3) +  0.00205521 * Math.pow(ds, 2) -0.0667762 * ds + 1.93661  ,0,1 );
+//    public static double angle(double ds){
+//        return MathFunctions.clamp( 3.05807e-8 * Math.pow(ds,4) - 0.0000109878 * Math.pow(ds, 3) +  0.00155972 * Math.pow(ds, 2) -0.105015 * ds + 2.97808  ,0,1 );
+//    }
+
+//    public static double power(double ds){
+//        return MathFunctions.clamp(1.45699e-8 * Math.pow(ds,4) -0.0000041059 * Math.pow(ds,3) +0.000355953 * Math.pow(ds, 2) -0.00686338 * ds +0.653685 ,0,1 );
+//    }
+    public static double angle(double ds) {
+        return MathFunctions.clamp(
+                6.14299e-8 * Math.pow(ds, 4)
+                        - 0.0000205051 * Math.pow(ds, 3)
+                        + 0.00254934 * Math.pow(ds, 2)
+                        - 0.145368 * ds
+                        + 3.5316,
+                0, 1
+        );
     }
 
-    public static double power(double ds){
-        return MathFunctions.clamp(1.66667e-7 * Math.pow(ds,4) -0.0000359259 * Math.pow(ds,3) +0.00286111 * Math.pow(ds, 2) -0.0941852 * ds +1.79333 ,0,1 );
+    public static double power(double ds) {
+        return MathFunctions.clamp(
+                2.05905e-8 * Math.pow(ds, 4)
+                        - 0.00000597677 * Math.pow(ds, 3)
+                        + 0.000551306 * Math.pow(ds, 2)
+                        - 0.0148477 * ds
+                        + 0.763353,
+                0, 1
+        );
     }
 }
