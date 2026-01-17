@@ -28,7 +28,7 @@ public class AutoNineGoal extends CommandOpMode {
     public Follower follower;
     public BallDetectionSubsystem baller;
     public RotateWhenFull rotaet;
-    public boolean intervension = true;
+    public boolean intervension = true ;
 
     private Timer pathTimer, actionTimer, opmodeTimer;
     private int pathState;
@@ -42,9 +42,9 @@ public class AutoNineGoal extends CommandOpMode {
 
 
     private final Pose start = new Pose(119,135.6,Math.toRadians(307));
-    private final Pose preload = new Pose(111,121);
+    private final Pose preload = new Pose(105,116);
     private final Pose path2 = new Pose(97,88);
-    private final Pose path3 = new Pose(127,83.5);
+    private final Pose path3 = new Pose(124,86.5);
     private final Pose path4 = new Pose(120.46,126.33);
     private final Pose b1 = new Pose(102,87);
     private final Pose b2 = new Pose(113,87);
@@ -71,15 +71,15 @@ public class AutoNineGoal extends CommandOpMode {
         firststack.setLinearHeadingInterpolation(Math.toRadians(37),Math.toRadians(355));
 
         takeStack1 = new Path(new BezierLine(path2,path3));
-        takeStack1.setLinearHeadingInterpolation(Math.toRadians(355), Math.toRadians(355));
+        takeStack1.setLinearHeadingInterpolation(Math.toRadians(355), Math.toRadians(0));
 
 
 
         goShoot1 = new Path(new BezierLine(b3/* path4 */,preload));                                              //    PATH4
-        goShoot1.setLinearHeadingInterpolation(Math.toRadians(5), Math.toRadians(37));
+        goShoot1.setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(37));
 
         tele = new Path(new BezierLine(preload, path4));
-        tele.setLinearHeadingInterpolation(Math.toRadians(37), Math.toRadians(355));
+        tele.setLinearHeadingInterpolation(Math.toRadians(37), Math.toRadians(0));
 
 
 
@@ -117,6 +117,7 @@ public class AutoNineGoal extends CommandOpMode {
 
         rotaet = new RotateWhenFull(sorter, baller);
         rotaet.CurentIndex = 0;
+        sorter.rotateToShoot(0);
 
         baller.canDetectIntake = false;
         intervension = false;
@@ -127,9 +128,10 @@ public class AutoNineGoal extends CommandOpMode {
         schedule(
                 new SequentialCommandGroup(
                         new InstantCommand(()-> intervension = false),
+                        new InstantCommand(()-> baller.offset = false),
                         new InstantCommand(()-> baller.autoDetection(false)),
                         new InstantCommand(()-> sorter.retractPusher()),
-                        new InstantCommand(()-> shooter.shoot(0.71)),
+                        new InstantCommand(()-> shooter.shoot(0.61)),
                         new WaitCommand(500),
                         new InstantCommand(()-> sorter.rotateToShoot(0)),
                         new InstantCommand(()-> sorter.rotateToSlot(1)),
@@ -163,13 +165,54 @@ public class AutoNineGoal extends CommandOpMode {
                         new WaitCommand(1000),
                         new ParallelCommandGroup(
                                 new SequentialCommandGroup(
+                                        new InstantCommand(()-> baller.offset = true),
+
                                         new InstantCommand(()-> baller.autoDetection(true)),
                                         new InstantCommand(()-> intervension = true),
-                                        new InstantCommand(()-> follower.setMaxPower(0.40)),
+                                        new InstantCommand(()-> baller.isDone = true),
+                                        new InstantCommand(()-> follower.setMaxPower(0.31)),
                                         new WaitCommand(200),
-                                        new InstantCommand(()-> follower.followPath(takeStack1))
+                                        new InstantCommand(()-> follower.followPath(takeStack1)),
+                                        new WaitCommand(4000),
+                                        new InstantCommand(()-> baller.offset = false),
+                                        new InstantCommand(()-> intake.idle()),
+                                        new InstantCommand(()-> intervension = false),
+                                        new InstantCommand(()-> baller.autoDetection(false)),
+                                        new InstantCommand(()-> baller.isDone = false),
+                                        new InstantCommand(()-> intake.idle()),
+                                        new InstantCommand(()-> stopper.Stop()),
+                                        new InstantCommand(()-> follower.setMaxPower(1)),
+                                        new InstantCommand(()-> shooter.shoot(0.61)),
+                                        new WaitCommand(100)
+
                                 )
-                        )
+                        ),
+                        new InstantCommand(()-> sorter.rotateToShoot(0)),
+                        new InstantCommand(()-> follower.followPath(goShoot1)),
+                        new WaitCommand(2000),
+                        new InstantCommand(()-> sorter.pushBall()),
+                        new WaitCommand(500),
+                        new InstantCommand(()-> sorter.retractPusher()),
+                        new WaitCommand(400),
+                        new InstantCommand(()-> sorter.rotateToShoot(1)),
+                        new WaitCommand(300),
+                        new InstantCommand(()-> sorter.pushBall()),
+                        new WaitCommand(500),
+                        new InstantCommand(()-> sorter.retractPusher()),
+                        new WaitCommand(400),
+                        new InstantCommand(()-> sorter.rotateToShoot(2)),
+                        new WaitCommand(300),
+                        new InstantCommand(()-> sorter.pushBall()),
+                        new WaitCommand(1000),
+                        new InstantCommand(()-> sorter.retractPusher()),
+                        new InstantCommand(()-> shooter.idle()),
+                        new WaitCommand(500),
+                        new InstantCommand(()-> sorter.rotateToSlot(0)),
+                        new InstantCommand(()-> follower.setMaxPower(0.55)),
+                        new WaitCommand(500),
+                        new InstantCommand(()-> follower.followPath(tele)),
+
+                        new WaitCommand(300)
 
                 )
         );
@@ -203,19 +246,34 @@ park
         super.run();
         follower.update();
         sorter.setDefaultCommand(rotaet);
-        if(baller.canDetectIntake == true){
+
+
+        if(baller.canDetectIntake == false && intervension == true && baller.offset == true){
             schedule(
-                    new InstantCommand(()-> sorter.rotateToSlot(rotaet.index(rotaet.CurentIndex)))
-            );
+                    new SequentialCommandGroup(
+                            new InstantCommand(()-> intervension = false),
+
+                            new InstantCommand(()-> sorter.rotateToSlot(rotaet.index(rotaet.CurentIndex))),
+
+                            new WaitCommand(400),
+                            new InstantCommand(()-> intervension = true),
+                            new InstantCommand(()-> baller.isDone = true),
+                            new InstantCommand(()-> baller.autoDetection(true) )
+
+                    )
+                    );
         }
 
 
-        if(baller.canDetectIntake == false && intervension == true){
+        if(baller.canDetectIntake == false && intervension == true && baller.isDone == true ){
             schedule(
                     new SequentialCommandGroup(
-                            new WaitCommand(600),
-                            new InstantCommand(()-> baller.autoDetection(true) )
+//                            new WaitCommand(100),
+//                            new InstantCommand(()-> baller.autoDetection(true) )
+
+
                     )
+
             );
         }
         //autonomousPathUpdate();
@@ -223,7 +281,10 @@ park
         telemetry.addData("ALpha1: ",baller.co1.alpha());
         telemetry.addData("ALpha2: ",baller.co2.alpha());
         telemetry.addData("index", rotaet.index(rotaet.CurentIndex));
-        telemetry.addData("state: ", baller.canDetectIntake);
+        telemetry.addData("    ", "   ");
+        telemetry.addData("canDetect   : ", baller.canDetectIntake);
+        telemetry.addData("isDone      : ", baller.isDone);
+        telemetry.addData("intervention: ", intervension);
         telemetry.update();
     }
 

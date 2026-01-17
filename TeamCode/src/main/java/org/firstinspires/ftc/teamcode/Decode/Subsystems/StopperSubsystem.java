@@ -18,6 +18,6 @@ public class StopperSubsystem extends SubsystemBase {
         stopper.set(1);
     }
     public void Retract(){
-        stopper.set(0.75);
+        stopper.set(0.65);
     }
 }

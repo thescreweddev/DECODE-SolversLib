@@ -10,7 +10,7 @@ public class BallDetectionSubsystem extends SubsystemBase {
 
     public RevColorSensorV3 co1,co2;
     public int ballCount;
-    public boolean shooting,canDetectIntake = false;
+    public boolean shooting,canDetectIntake = false, isDone = false,offset = false;
 
     public BallDetectionSubsystem(HardwareMap hardwareMap){
         super();

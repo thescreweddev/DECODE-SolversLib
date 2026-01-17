@@ -31,10 +31,11 @@ public class RotateWhenFull extends CommandBase {
     @Override
     public void execute() {
         super.execute();
-        if(baller.canDetectIntake == true && (baller.co1.alpha()>150 || baller.co2.alpha()>150)){
+        if(baller.offset == true && baller.isDone == true && baller.canDetectIntake == true && (baller.co1.alpha()>120 || baller.co2.alpha()>120)){
 
             //sorter.rotateToSlot(index(CurentIndex));
             CurentIndex++;
+            baller.isDone = false;
             baller.canDetectIntake = false;
 
         }

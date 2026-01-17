@@ -16,22 +16,22 @@ public class Constants {
 //    }
     public static double angle(double ds) {
         return MathFunctions.clamp(
-                6.14299e-8 * Math.pow(ds, 4)
-                        - 0.0000205051 * Math.pow(ds, 3)
-                        + 0.00254934 * Math.pow(ds, 2)
-                        - 0.145368 * ds
-                        + 3.5316,
+                -5e-7 * Math.pow(ds, 4)
+                        + 0.000112278 * Math.pow(ds, 3)
+                        - 0.00909833 * Math.pow(ds, 2)
+                        + 0.296956 * ds
+                        - 2.345,
                 0, 1
         );
     }
 
     public static double power(double ds) {
         return MathFunctions.clamp(
-                2.05905e-8 * Math.pow(ds, 4)
-                        - 0.00000597677 * Math.pow(ds, 3)
-                        + 0.000551306 * Math.pow(ds, 2)
-                        - 0.0148477 * ds
-                        + 0.763353,
+                1.83333e-7 * Math.pow(ds, 4)
+                        - 0.0000357778 * Math.pow(ds, 3)
+                        + 0.002455 * Math.pow(ds, 2)
+                        - 0.0652413 * ds
+                        + 1.16971,
                 0, 1
         );
     }

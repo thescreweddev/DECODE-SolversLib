@@ -6,6 +6,7 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
@@ -29,7 +30,11 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @Autonomous(name = "RedGoal", group = "A")
 public class AutoCommandBased extends CommandOpMode {
 
+    public Limelight3A limelight;
+
+
     public Follower follower;
+
     private Timer pathTimer, actionTimer, opmodeTimer;
     public BallDetectionSubsystem baller;
     private int pathState;
@@ -98,6 +103,8 @@ public class AutoCommandBased extends CommandOpMode {
         pathTimer = new Timer();
         opmodeTimer = new Timer();
         opmodeTimer.resetTimer();
+        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        limelight.pipelineSwitch(0);
 
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
@@ -114,144 +121,146 @@ public class AutoCommandBased extends CommandOpMode {
         baller.canDetectIntake = false;
         //setPathState(0);
 
+        limelight.start();
+
         waitForStart();
 
-        schedule(
-
-                new SequentialCommandGroup(
-                        new InstantCommand(()-> sorter.retractPusher()),
-                        new InstantCommand(()-> shooter.shoot(0.71)),
-                        new WaitCommand(500),
-                        new InstantCommand(()-> sorter.rotateToShoot(0)),
-                        new InstantCommand(()-> sorter.rotateToSlot(1)),
-                        new InstantCommand(()-> sorter.rotateToShoot(0)),
-                        new WaitCommand(2000),
-                        new InstantCommand(()-> follower.followPath(scorePreload)),
-                        new WaitCommand(1000),
-                        new InstantCommand(()-> sorter.pushBall()),
-                        new WaitCommand(500),
-                        new InstantCommand(()-> sorter.retractPusher()),
-                        new WaitCommand(400),
-                        new InstantCommand(()-> sorter.rotateToShoot(1)),
-                        new WaitCommand(300),
-                        new InstantCommand(()-> sorter.pushBall()),
-                        new WaitCommand(500),
-                        new InstantCommand(()-> sorter.retractPusher()),
-                        new WaitCommand(400),
-                        new InstantCommand(()-> sorter.rotateToShoot(2)),
-                        new WaitCommand(300),
-                        new InstantCommand(()-> sorter.pushBall()),
-                        new WaitCommand(1000),
-                        new InstantCommand(()-> sorter.retractPusher()),
-                        new InstantCommand(()-> shooter.idle()),
-                        new WaitCommand(500),
-                        new InstantCommand(()-> sorter.rotateToSlot(0)),
-                        new WaitCommand(200),
-                        new InstantCommand(()-> follower.followPath(firststack)),
-                        new WaitCommand(1000),
-                        new InstantCommand(()-> intake.active()),
-                        new InstantCommand(()-> stopper.Retract()),
-
-
-
-                        /*
-                        new WaitCommand(1000),
-                        new ParallelCommandGroup(
-                                new SequentialCommandGroup(
-                                        new InstantCommand(()-> follower.setMaxPower(0.54)),
-                                        new InstantCommand(()-> follower.followPath(takeStack1))
-                                ),
-                                new SequentialCommandGroup(
-                                        new WaitCommand(1200),
-                                        new InstantCommand(()-> sorter.rotateToSlot(1)),
-                                        new WaitCommand(365),
-                                        new InstantCommand(()-> sorter.rotateToSlot(2)),
-                                        new WaitCommand(1500),
-                                        new InstantCommand(()-> intake.idle()),
-                                        new InstantCommand(()-> stopper.Stop()),
-                                        new InstantCommand(()-> follower.setMaxPower(1)),
-                                        new InstantCommand(()-> shooter.shoot(0.71))
-                                )
-                        ),
-                        */
-
-                        new WaitCommand(1000),
-                        new ParallelCommandGroup(
-                                new SequentialCommandGroup(
-                                        new InstantCommand(()-> follower.setMaxPower(0.54)),
-                                        new InstantCommand(()-> follower.followPath(bila1))
-                                ),
-                                new SequentialCommandGroup(
-                                        new WaitCommand(1100),
-                                        new InstantCommand(()-> sorter.rotateToSlot(1))
-
-                                )
-                        ),
-                        new WaitCommand(500),
-                        new ParallelCommandGroup(
-                                new SequentialCommandGroup(
-                                        new InstantCommand(()-> follower.setMaxPower(0.54)),
-                                        new InstantCommand(()-> follower.followPath(bila2))
-                                ),
-                                new SequentialCommandGroup(
-                                        new WaitCommand(1300),
-                                        new InstantCommand(()-> sorter.rotateToSlot(2))
-
-                                )
-                        ),
-                        new WaitCommand(500),
-                        new ParallelCommandGroup(
-                                new SequentialCommandGroup(
-                                        new InstantCommand(()-> follower.setMaxPower(0.54)),
-                                        new InstantCommand(()-> follower.followPath(bila3))
-                                ),
-                                new SequentialCommandGroup(
-                                        new WaitCommand(1200),
-                                        new InstantCommand(()-> intake.idle()),
-                                        new InstantCommand(()-> stopper.Stop()),
-                                        new InstantCommand(()-> follower.setMaxPower(1)),
-                                        new InstantCommand(()-> shooter.shoot(0.71))
-                                )
-                        ),
-
-
-
-
-
-
-                        new InstantCommand(()-> sorter.rotateToShoot(0)),
-                        new InstantCommand(()-> follower.followPath(goShoot1)),
-                        new WaitCommand(2000),
-                        new InstantCommand(()-> sorter.pushBall()),
-                        new WaitCommand(500),
-                        new InstantCommand(()-> sorter.retractPusher()),
-                        new WaitCommand(400),
-                        new InstantCommand(()-> sorter.rotateToShoot(1)),
-                        new WaitCommand(300),
-                        new InstantCommand(()-> sorter.pushBall()),
-                        new WaitCommand(500),
-                        new InstantCommand(()-> sorter.retractPusher()),
-                        new WaitCommand(400),
-                        new InstantCommand(()-> sorter.rotateToShoot(2)),
-                        new WaitCommand(300),
-                        new InstantCommand(()-> sorter.pushBall()),
-                        new WaitCommand(1000),
-                        new InstantCommand(()-> sorter.retractPusher()),
-                        new InstantCommand(()-> shooter.idle()),
-                        new WaitCommand(500),
-                        new InstantCommand(()-> sorter.rotateToSlot(0)),
-                        new InstantCommand(()-> follower.setMaxPower(0.55)),
-                        new WaitCommand(500),
-                        new InstantCommand(()-> follower.followPath(tele)),
-
-                        new WaitCommand(300)
-
-
-
-
-
-                )
-        );
+//        schedule(
+//
+//                new SequentialCommandGroup(
+//                        new InstantCommand(()-> sorter.retractPusher()),
+//                        new InstantCommand(()-> shooter.shoot(0.71)),
+//                        new WaitCommand(500),
+//                        new InstantCommand(()-> sorter.rotateToShoot(0)),
+//                        new InstantCommand(()-> sorter.rotateToSlot(1)),
+//                        new InstantCommand(()-> sorter.rotateToShoot(0)),
+//                        new WaitCommand(2000),
+//                        new InstantCommand(()-> follower.followPath(scorePreload)),
+//                        new WaitCommand(1000),
+//                        new InstantCommand(()-> sorter.pushBall()),
+//                        new WaitCommand(500),
+//                        new InstantCommand(()-> sorter.retractPusher()),
+//                        new WaitCommand(400),
+//                        new InstantCommand(()-> sorter.rotateToShoot(1)),
+//                        new WaitCommand(300),
+//                        new InstantCommand(()-> sorter.pushBall()),
+//                        new WaitCommand(500),
+//                        new InstantCommand(()-> sorter.retractPusher()),
+//                        new WaitCommand(400),
+//                        new InstantCommand(()-> sorter.rotateToShoot(2)),
+//                        new WaitCommand(300),
+//                        new InstantCommand(()-> sorter.pushBall()),
+//                        new WaitCommand(1000),
+//                        new InstantCommand(()-> sorter.retractPusher()),
+//                        new InstantCommand(()-> shooter.idle()),
+//                        new WaitCommand(500),
+//                        new InstantCommand(()-> sorter.rotateToSlot(0)),
+//                        new WaitCommand(200),
+//                        new InstantCommand(()-> follower.followPath(firststack)),
+//                        new WaitCommand(1000),
+//                        new InstantCommand(()-> intake.active()),
+//                        new InstantCommand(()-> stopper.Retract()),
+//
+//
+//
+//                        /*
+//                        new WaitCommand(1000),
+//                        new ParallelCommandGroup(
+//                                new SequentialCommandGroup(
+//                                        new InstantCommand(()-> follower.setMaxPower(0.54)),
+//                                        new InstantCommand(()-> follower.followPath(takeStack1))
+//                                ),
+//                                new SequentialCommandGroup(
+//                                        new WaitCommand(1200),
+//                                        new InstantCommand(()-> sorter.rotateToSlot(1)),
+//                                        new WaitCommand(365),
+//                                        new InstantCommand(()-> sorter.rotateToSlot(2)),
+//                                        new WaitCommand(1500),
+//                                        new InstantCommand(()-> intake.idle()),
+//                                        new InstantCommand(()-> stopper.Stop()),
+//                                        new InstantCommand(()-> follower.setMaxPower(1)),
+//                                        new InstantCommand(()-> shooter.shoot(0.71))
+//                                )
+//                        ),
+//                        */
+//
+//                        new WaitCommand(1000),
+//                        new ParallelCommandGroup(
+//                                new SequentialCommandGroup(
+//                                        new InstantCommand(()-> follower.setMaxPower(0.54)),
+//                                        new InstantCommand(()-> follower.followPath(bila1))
+//                                ),
+//                                new SequentialCommandGroup(
+//                                        new WaitCommand(1100),
+//                                        new InstantCommand(()-> sorter.rotateToSlot(1))
+//
+//                                )
+//                        ),
+//                        new WaitCommand(500),
+//                        new ParallelCommandGroup(
+//                                new SequentialCommandGroup(
+//                                        new InstantCommand(()-> follower.setMaxPower(0.54)),
+//                                        new InstantCommand(()-> follower.followPath(bila2))
+//                                ),
+//                                new SequentialCommandGroup(
+//                                        new WaitCommand(1300),
+//                                        new InstantCommand(()-> sorter.rotateToSlot(2))
+//
+//                                )
+//                        ),
+//                        new WaitCommand(500),
+//                        new ParallelCommandGroup(
+//                                new SequentialCommandGroup(
+//                                        new InstantCommand(()-> follower.setMaxPower(0.54)),
+//                                        new InstantCommand(()-> follower.followPath(bila3))
+//                                ),
+//                                new SequentialCommandGroup(
+//                                        new WaitCommand(1200),
+//                                        new InstantCommand(()-> intake.idle()),
+//                                        new InstantCommand(()-> stopper.Stop()),
+//                                        new InstantCommand(()-> follower.setMaxPower(1)),
+//                                        new InstantCommand(()-> shooter.shoot(0.71))
+//                                )
+//                        ),
+//
+//
+//
+//
+//
+//
+//                        new InstantCommand(()-> sorter.rotateToShoot(0)),
+//                        new InstantCommand(()-> follower.followPath(goShoot1)),
+//                        new WaitCommand(2000),
+//                        new InstantCommand(()-> sorter.pushBall()),
+//                        new WaitCommand(500),
+//                        new InstantCommand(()-> sorter.retractPusher()),
+//                        new WaitCommand(400),
+//                        new InstantCommand(()-> sorter.rotateToShoot(1)),
+//                        new WaitCommand(300),
+//                        new InstantCommand(()-> sorter.pushBall()),
+//                        new WaitCommand(500),
+//                        new InstantCommand(()-> sorter.retractPusher()),
+//                        new WaitCommand(400),
+//                        new InstantCommand(()-> sorter.rotateToShoot(2)),
+//                        new WaitCommand(300),
+//                        new InstantCommand(()-> sorter.pushBall()),
+//                        new WaitCommand(1000),
+//                        new InstantCommand(()-> sorter.retractPusher()),
+//                        new InstantCommand(()-> shooter.idle()),
+//                        new WaitCommand(500),
+//                        new InstantCommand(()-> sorter.rotateToSlot(0)),
+//                        new InstantCommand(()-> follower.setMaxPower(0.55)),
+//                        new WaitCommand(500),
+//                        new InstantCommand(()-> follower.followPath(tele)),
+//
+//                        new WaitCommand(300)
+//
+//
+//
+//
+//
+//                )
+//        );
 
 
 
@@ -262,10 +271,15 @@ public class AutoCommandBased extends CommandOpMode {
         schedule(
                 new RotateWhenFull(sorter,baller)
         );
+
+
         super.run();
+
         follower.update();
         //autonomousPathUpdate();
 
+        telemetry.addData("id_detected", limelight.getLatestResult());
+        telemetry.addData("smth", limelight.getCalLatest());
         telemetry.update();
     }
 }
