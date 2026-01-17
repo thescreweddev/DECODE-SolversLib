@@ -38,6 +38,7 @@ public class AutoNineGoal extends CommandOpMode {
     public SortSubsystem sorter;
     public StopperSubsystem stopper;
 
+
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
