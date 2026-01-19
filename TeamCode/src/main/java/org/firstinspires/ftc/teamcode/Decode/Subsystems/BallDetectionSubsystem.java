@@ -20,7 +20,7 @@ public class BallDetectionSubsystem extends SubsystemBase {
     }
 
     public void ballInside(Gamepad gamepad) {
-        if((co1.alpha()>150 || co2.alpha()>150) && shooting == false){
+        if((co1.alpha()>800 || co2.alpha()>800) && shooting == false){
             gamepad.rumble(100);
         }
     }

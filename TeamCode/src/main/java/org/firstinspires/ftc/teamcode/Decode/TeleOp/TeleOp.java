@@ -39,6 +39,7 @@ public class TeleOp extends CommandOpMode {
 
     DriveSubsystem driveSubsystem;
     BallDetectionSubsystem baller;
+
     SortSubsystem sorter;
     IntakeSubsystem intake;
     ShootingSubsystem shooter;

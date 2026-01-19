@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.Decode.Subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Decode.Subsystems.ShootingSubsystem;
 import org.firstinspires.ftc.teamcode.Decode.Subsystems.SortSubsystem;
 import org.firstinspires.ftc.teamcode.Decode.Subsystems.StopperSubsystem;
+import org.firstinspires.ftc.teamcode.Decode.Subsystems.TuretSubsystem;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous(name = "🔴9_GOAL🔴", group = "1")
@@ -38,17 +39,16 @@ public class AutoNineGoal extends CommandOpMode {
     public SortSubsystem sorter;
     public StopperSubsystem stopper;
 
-
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
     private final Pose start = new Pose(119,135.6,Math.toRadians(307));   //start
     private final Pose preload = new Pose(105,116);    //preload
-    private final Pose path2 = new Pose(103,88);       // go to first  stack
-    private final Pose path3 = new Pose(124,86.5);     // take first stack
+    private final Pose path2 = new Pose(99,88);       // go to first  stack
+    private final Pose path3 = new Pose(126,86.5);     // take first stack
     private final Pose path4 = new Pose(120.46,126.33);  // PARK
-    private final Pose path5 = new Pose(103, 62);      // go to second stack
+    private final Pose path5 = new Pose(100, 62);      // go to second stack
     private final Pose path6 = new Pose(127.8, 60.2);  // take second stack
     private final Pose path7 = new Pose(105, 116);    // preload ?
 
@@ -79,7 +79,7 @@ public class AutoNineGoal extends CommandOpMode {
         firststack.setLinearHeadingInterpolation(Math.toRadians(37),Math.toRadians(355));
 
         takeStack1 = new Path(new BezierLine(path2,path3));
-        takeStack1.setLinearHeadingInterpolation(Math.toRadians(355), Math.toRadians(0));
+        takeStack1.setLinearHeadingInterpolation(Math.toRadians(355), Math.toRadians(350));
 
         goShoot1 = new Path(new BezierLine(path3/* path4 */,preload));                                              //    PATH4
         goShoot1.setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(37));
@@ -129,6 +129,8 @@ public class AutoNineGoal extends CommandOpMode {
         rotaet.CurentIndex = 0;
         sorter.rotateToShoot(0);
 
+
+
         baller.canDetectIntake = false;
         intervension = false;
         //setPathState(0);
@@ -144,9 +146,10 @@ public class AutoNineGoal extends CommandOpMode {
                         new InstantCommand(()-> shooter.shoot(0.9)),
                         new WaitCommand(500),
                         new InstantCommand(()-> shooter.shoot(0.61)),
+
                         new InstantCommand(()-> sorter.rotateToShoot(0)),
                         new InstantCommand(()-> follower.followPath(scorePreload)),
-                        new WaitCommand(1000),
+                        new WaitCommand(2000),
                         new InstantCommand(()-> sorter.pushBall()),
                         new WaitCommand(500),
                         new InstantCommand(()-> sorter.retractPusher()),
@@ -218,62 +221,65 @@ public class AutoNineGoal extends CommandOpMode {
                         new InstantCommand(()-> sorter.rotateToSlot(0)),
                         new InstantCommand(()-> follower.setMaxPower(1)),
                         new WaitCommand(500),
-
-                        new InstantCommand(()-> follower.followPath(secondStack)),
-                        new WaitCommand(1000),
-                        new InstantCommand(()-> intake.active()),
-                        new InstantCommand(()-> stopper.Retract()),
-                        new WaitCommand(1000),
-                        new ParallelCommandGroup(
-                                new SequentialCommandGroup(
-                                        new InstantCommand(()-> baller.offset = true),
-
-                                        new InstantCommand(()-> baller.autoDetection(true)),
-                                        new InstantCommand(()-> intervension = true),
-                                        new InstantCommand(()-> baller.isDone = true),
-                                        new InstantCommand(()-> follower.setMaxPower(0.31)),
-                                        new WaitCommand(200),
-                                        new InstantCommand(()-> follower.followPath(takeStack2)),
-                                        new WaitCommand(4000),
-                                        new InstantCommand(()-> baller.offset = false),
-                                        new InstantCommand(()-> intake.idle()),
-                                        new InstantCommand(()-> intervension = false),
-                                        new InstantCommand(()-> baller.autoDetection(false)),
-                                        new InstantCommand(()-> baller.isDone = false),
-                                        new InstantCommand(()-> intake.idle()),
-                                        new InstantCommand(()-> stopper.Stop()),
-                                        new InstantCommand(()-> follower.setMaxPower(1)),
-                                        new InstantCommand(()-> shooter.shoot(0.61)),
-                                        new WaitCommand(100)
-
-                                )
-                        ),
-                        new InstantCommand(()-> sorter.rotateToShoot(0)),
-                        new InstantCommand(()-> follower.followPath(goShoot2)),
-                        new WaitCommand(2000),
-                        new InstantCommand(()-> sorter.pushBall()),
-                        new WaitCommand(500),
-                        new InstantCommand(()-> sorter.retractPusher()),
-                        new WaitCommand(400),
-                        new InstantCommand(()-> sorter.rotateToShoot(1)),
-                        new WaitCommand(300),
-                        new InstantCommand(()-> sorter.pushBall()),
-                        new WaitCommand(500),
-                        new InstantCommand(()-> sorter.retractPusher()),
-                        new WaitCommand(400),
-                        new InstantCommand(()-> sorter.rotateToShoot(2)),
-                        new WaitCommand(300),
-                        new InstantCommand(()-> sorter.pushBall()),
-                        new WaitCommand(1000),
-                        new InstantCommand(()-> sorter.retractPusher()),
-                        new InstantCommand(()-> shooter.idle()),
-                        new WaitCommand(500),
-                        new InstantCommand(()-> sorter.rotateToSlot(0)),
-                        new InstantCommand(()-> follower.setMaxPower(1)),
-                        new WaitCommand(500),
-                        new InstantCommand(()-> follower.followPath(tele)),
-
-                        new WaitCommand(300)
+                        new InstantCommand(()-> follower.followPath(tele))
+//                        ,
+//
+//
+//                        new InstantCommand(()-> follower.followPath(secondStack)),
+//                        new WaitCommand(1000),
+//                        new InstantCommand(()-> intake.active()),
+//                        new InstantCommand(()-> stopper.Retract()),
+//                        new WaitCommand(1000),
+//                        new ParallelCommandGroup(
+//                                new SequentialCommandGroup(
+//                                        new InstantCommand(()-> baller.offset = true),
+//
+//                                        new InstantCommand(()-> baller.autoDetection(true)),
+//                                        new InstantCommand(()-> intervension = true),
+//                                        new InstantCommand(()-> baller.isDone = true),
+//                                        new InstantCommand(()-> follower.setMaxPower(0.31)),
+//                                        new WaitCommand(200),
+//                                        new InstantCommand(()-> follower.followPath(takeStack2)),
+//                                        new WaitCommand(4000),
+//                                        new InstantCommand(()-> baller.offset = false),
+//                                        new InstantCommand(()-> intake.idle()),
+//                                        new InstantCommand(()-> intervension = false),
+//                                        new InstantCommand(()-> baller.autoDetection(false)),
+//                                        new InstantCommand(()-> baller.isDone = false),
+//                                        new InstantCommand(()-> intake.idle()),
+//                                        new InstantCommand(()-> stopper.Stop()),
+//                                        new InstantCommand(()-> follower.setMaxPower(1)),
+//                                        new InstantCommand(()-> shooter.shoot(0.61)),
+//                                        new WaitCommand(100)
+//
+//                                )
+//                        ),
+//                        new InstantCommand(()-> sorter.rotateToShoot(0)),
+//                        new InstantCommand(()-> follower.followPath(goShoot2)),
+//                        new WaitCommand(2000),
+//                        new InstantCommand(()-> sorter.pushBall()),
+//                        new WaitCommand(500),
+//                        new InstantCommand(()-> sorter.retractPusher()),
+//                        new WaitCommand(400),
+//                        new InstantCommand(()-> sorter.rotateToShoot(1)),
+//                        new WaitCommand(300),
+//                        new InstantCommand(()-> sorter.pushBall()),
+//                        new WaitCommand(500),
+//                        new InstantCommand(()-> sorter.retractPusher()),
+//                        new WaitCommand(400),
+//                        new InstantCommand(()-> sorter.rotateToShoot(2)),
+//                        new WaitCommand(300),
+//                        new InstantCommand(()-> sorter.pushBall()),
+//                        new WaitCommand(1000),
+//                        new InstantCommand(()-> sorter.retractPusher()),
+//                        new InstantCommand(()-> shooter.idle()),
+//                        new WaitCommand(500),
+//                        new InstantCommand(()-> sorter.rotateToSlot(0)),
+//                        new InstantCommand(()-> follower.setMaxPower(1)),
+//                        new WaitCommand(500),
+//                        new InstantCommand(()-> follower.followPath(tele)),
+//
+//                        new WaitCommand(300)
 
                 )
         );
