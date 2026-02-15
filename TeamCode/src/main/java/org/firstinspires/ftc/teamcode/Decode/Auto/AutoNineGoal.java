@@ -144,8 +144,8 @@ public class AutoNineGoal extends CommandOpMode {
                         new InstantCommand(()-> baller.autoDetection(false)),
                         new InstantCommand(()-> sorter.retractPusher()),
                         new InstantCommand(()-> shooter.shoot(0.9)),
-                        new WaitCommand(500),
-                        new InstantCommand(()-> shooter.shoot(0.61)),
+                        new WaitCommand(2-500),
+                        new InstantCommand(()-> shooter.shoot(0.4)),
 
                         new InstantCommand(()-> sorter.rotateToShoot(0)),
                         new InstantCommand(()-> follower.followPath(scorePreload)),
@@ -193,8 +193,8 @@ public class AutoNineGoal extends CommandOpMode {
                                         new InstantCommand(()-> intake.idle()),
                                         new InstantCommand(()-> stopper.Stop()),
                                         new InstantCommand(()-> follower.setMaxPower(1)),
-                                        new InstantCommand(()-> shooter.shoot(0.61)),
-                                        new WaitCommand(100)
+                                        new InstantCommand(()-> shooter.shoot(0.4)),
+                                        new WaitCommand(400)
 
                                 )
                         ),

@@ -43,7 +43,10 @@ public class ZoinksScoob extends CommandOpMode {
         );
 
 
+
         telemetry.addData("Velocity:", shooter.shut.getVelocity());
+        telemetry.addData("Velocity:", shooter.shut2.getVelocity());
+
         telemetry.update();
 
 

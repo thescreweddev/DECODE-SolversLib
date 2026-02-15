@@ -1,12 +1,19 @@
 package org.firstinspires.ftc.teamcode.Decode.TeleOp;
 
+import androidx.core.math.MathUtils;
+
 import com.bylazar.gamepad.Gamepad;
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.ParallelCommandGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.command.WaitCommand;
+import com.seattlesolvers.solverslib.controller.PIDFController;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
@@ -22,6 +29,7 @@ import org.firstinspires.ftc.teamcode.Decode.Commands.RobotCentric;
 import org.firstinspires.ftc.teamcode.Decode.Commands.RotateToShoot;
 import org.firstinspires.ftc.teamcode.Decode.Commands.RotateToSlotCommand;
 import org.firstinspires.ftc.teamcode.Decode.Commands.ShootSequence;
+
 import org.firstinspires.ftc.teamcode.Decode.Subsystems.BallDetectionSubsystem;
 import org.firstinspires.ftc.teamcode.Decode.Subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.Decode.Subsystems.IntakeSubsystem;
@@ -31,6 +39,8 @@ import org.firstinspires.ftc.teamcode.Decode.Subsystems.SortSubsystem;
 import org.firstinspires.ftc.teamcode.Decode.Subsystems.StopperSubsystem;
 import org.firstinspires.ftc.teamcode.Decode.Subsystems.Constants;
 import org.firstinspires.ftc.teamcode.Decode.Subsystems.TuretSubsystem;
+
+import java.util.function.DoubleSupplier;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp
 public class TeleOp extends CommandOpMode {
@@ -45,14 +55,29 @@ public class TeleOp extends CommandOpMode {
     ShootingSubsystem shooter;
     StopperSubsystem stopper;
     TuretSubsystem ajustare;
+    public double visionRot = 0;
 
     public static Pose2D pose ;
+    public double kP = 0.02
+            ,kI
+            ,kD = 0.001
+            ,kF
+            ;
     public static double robotX = 71.5;
     public static double robotY = 71.5;
     public static double robotHeading = Math.toRadians(37);
+    public DoubleSupplier rotatie;
 
-    double dx,dy,goalx = 12  ,goaly = 12 ,distance;
+    double dx,dy,goalx = 11  ,goaly = 11 ,distance;
 
+    double P = 1,F = 1;
+
+    PIDFController turnPID = new PIDFController(
+            kP, kI, kD, kF
+    );
+
+    Limelight3A limelight;
+    boolean trackTag = false;
 
 
     boolean start = false,inter,outint;
@@ -79,6 +104,17 @@ public class TeleOp extends CommandOpMode {
         stopper = new StopperSubsystem(hardwareMap);
         baller = new BallDetectionSubsystem(hardwareMap);
 
+        PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P, 0, 0,F);
+        shooter.shut.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
+        shooter.shut2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
+
+        turnPID = new PIDFController(new PIDFCoefficients(kP,kI,kD,kF));
+        turnPID.setTolerance(1.0);
+
+        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        limelight.pipelineSwitch(0);
+        limelight.start();
+
 
 
         gm1 = new GamepadEx(gamepad1);
@@ -96,11 +132,32 @@ public class TeleOp extends CommandOpMode {
                 driveSubsystem,
                 gm1::getLeftX,
                 gm1::getLeftY,
-                gm1::getRightX
-        );
+                ()-> gm1.getRightX() + visionRot
+                );
         driveSubsystem.setDefaultCommand(driveRobotCentric);
 
 
+
+//        gm1.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whileHeld(
+//                new VisionTurnCommand(
+//                        driveSubsystem,
+//                        limelight,
+//                        turnPID,
+//                        () -> -gamepad1.left_stick_y,
+//                        () -> gamepad1.left_stick_x
+//
+//                        )
+//        );
+
+        gm1.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(
+                new InstantCommand(()-> trackTag = true)
+        ).whenReleased(
+                new SequentialCommandGroup(
+                        new InstantCommand(()-> trackTag = false),
+                        new InstantCommand(()-> visionRot = 0),
+                        new InstantCommand(()-> turnPID.reset())
+                )
+        );
 
         //-------------------------------------------------------------------------------------
 
@@ -185,6 +242,9 @@ public class TeleOp extends CommandOpMode {
         );
         //==========================================================================
 
+
+
+
         gm2.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(
                 new InstantCommand(()-> shooter.setPower(1))
         );
@@ -206,7 +266,7 @@ public class TeleOp extends CommandOpMode {
 
         //==========================================================================
 
-        gm2.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(
+        gm1.getGamepadButton(GamepadKeys.Button.PS).whenPressed(
                 new InstantCommand(()-> driveSubsystem.resetPinpoint())
         ).whenReleased(
                 new InstantCommand(()-> gamepad2.rumble(100))
@@ -260,6 +320,15 @@ public class TeleOp extends CommandOpMode {
  //   {button pt shoot si matchcase  ;}
 
     public void run(){
+
+        LLResult result = limelight.getLatestResult();
+//        double x = -gamepad1.left_stick_y;
+//        double y = gamepad1.left_stick_x;
+//        double rot = gamepad1.right_stick_x;
+
+
+
+
         super.run();
         if(!start){
             start = true;
@@ -271,6 +340,16 @@ public class TeleOp extends CommandOpMode {
             );
         }
 
+        if (result.isValid() && trackTag==true){
+            double ty = limelight.getLatestResult().getTy();
+            visionRot = turnPID.calculate(ty,0);
+
+            if(Math.abs(ty)< 0.5){
+                visionRot = 0;
+            }
+
+            visionRot = MathUtils.clamp(visionRot, -0.5, 0.5);
+        }
 
 //            schedule(
 //                    new RotateToSlotCommand(sortSubsystem,1)
@@ -279,10 +358,15 @@ public class TeleOp extends CommandOpMode {
         if(inter && !outint){
             shooter.shoot(Constants.power(distance));
         }else if(!inter && outint){
-            shooter.shoot(-0.67);                 //haha 67
+            shooter.shoot(-0.4);                 //haha 67
         }else{
             shooter.idle();
         }
+
+
+        PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P, 0, 0,F);
+        shooter.shut.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
+        shooter.shut2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
 
         driveSubsystem.pinpoint.update();
         driveSubsystem.pinpoint.getEncoderX();
@@ -309,6 +393,8 @@ public class TeleOp extends CommandOpMode {
         telemetry.addData("  ", "  ");
         telemetry.addData("alpha1:", baller.co1.alpha());
         telemetry.addData("alpha2:", baller.co2.alpha());
+        telemetry.addData("encoder", shooter.shut.getVelocity());
+        telemetry.addData("limelight", limelight.getLatestResult().getTy());
         telemetry.update();
 
         schedule(

@@ -53,13 +53,18 @@ public class SortSubsystem extends SubsystemBase {
     public boolean canShoot = false;
 
     public int currentSlotIndex = 0;
-    public static double sl1 = 0.11
-              ,   sl2 = 0.354
-              ,   sl3 = 0.605
-            ;
+    public static double
+                  TA1 =  0.294
+              ,   TA2 = 0.501
+              ,   TA3 = 0.701
+
+              ,   SA1 = 0.144
+              ,   SA2 = 0.351
+              ,   SA3 = 0.551;
+
 
     // pusher positions
-    private final double PUSH_POS = 0.2;
+    private final double PUSH_POS = 0.8;
     private final double RETRACT_POS = 1;
 
     public SortSubsystem(HardwareMap hardwareMap) {
@@ -68,9 +73,9 @@ public class SortSubsystem extends SubsystemBase {
         pusher = new ServoEx(hardwareMap,"arm");
        // colorSensor = hardwareMap.get(RevColorSensorV3.class, "colorsensor");
 
-        slots[0] = new Slot(0, /*1*/ 0.32, sl1);
-        slots[1] = new Slot(1, /*2*/ 0.567, sl2);
-        slots[2] = new Slot(2, /*3*/ 0.81, sl3);
+        slots[0] = new Slot(0, /*1*/ TA1, SA1);
+        slots[1] = new Slot(1, /*2*/ TA2, SA2);
+        slots[2] = new Slot(2, /*3*/ TA3, SA3);
     }
 
     // logica slot

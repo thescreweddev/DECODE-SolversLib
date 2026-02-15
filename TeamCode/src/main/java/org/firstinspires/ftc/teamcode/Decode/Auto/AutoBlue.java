@@ -96,7 +96,7 @@ public class AutoBlue extends CommandOpMode {
 
                 new SequentialCommandGroup(
                         new InstantCommand(() -> sorter.retractPusher()),
-                        new InstantCommand(() -> shooter.shoot(0.71)),
+                        new InstantCommand(() -> shooter.shoot(0.4)),
                         new WaitCommand(500),
                         new InstantCommand(() -> sorter.rotateToShoot(0)),
                         new InstantCommand(() -> sorter.rotateToSlot(1)),
@@ -186,7 +186,7 @@ public class AutoBlue extends CommandOpMode {
                                         new InstantCommand(() -> intake.idle()),
                                         new InstantCommand(() -> stopper.Stop()),
                                         new InstantCommand(() -> follower.setMaxPower(1)),
-                                        new InstantCommand(() -> shooter.shoot(0.71))
+                                        new InstantCommand(() -> shooter.shoot(0.4))
                                 )
                         ),
 
